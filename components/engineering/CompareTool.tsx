@@ -79,7 +79,7 @@ export function CompareTool({ products }: { products: ComparableProduct[] }) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder={selected.length >= MAX ? `Maximum ${MAX} products` : "Add a component to compare…"}
           disabled={selected.length >= MAX}
-          className="h-11 w-full rounded-md border border-border-strong bg-surface pl-10 pr-3 text-sm text-fg outline-none transition-colors placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 disabled:opacity-60"
+          className="h-11 w-full rounded-md border border-border-strong bg-surface pl-10 pr-3 text-base text-fg sm:text-sm outline-none transition-colors placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 disabled:opacity-60"
         />
         {query && results.length > 0 && (
           <ul className="absolute z-20 mt-2 w-full overflow-hidden rounded-lg border border-border bg-surface shadow-card-lg">

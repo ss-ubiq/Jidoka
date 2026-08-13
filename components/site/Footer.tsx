@@ -55,14 +55,14 @@ export function Footer() {
           </div>
           <Link
             href="/request-a-quote"
-            className="inline-flex h-13 items-center gap-2 rounded-md bg-accent px-7 py-3.5 font-medium text-accent-fg shadow-card transition-all hover:shadow-card-lg hover:brightness-110"
+            className="inline-flex h-[3.25rem] items-center gap-2 rounded-md bg-accent px-7 py-3.5 font-medium text-accent-fg shadow-card transition-all hover:shadow-card-lg hover:brightness-110"
           >
             Request a Quote <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>
 
-      <div className="container-page grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.3fr_repeat(4,1fr)]">
+      <div className="container-page grid gap-10 py-14 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-[1.3fr_repeat(4,1fr)]">
         <div className="space-y-4">
           <Logo />
           <p className="max-w-xs text-sm leading-relaxed text-fg-subtle">{site.description}</p>

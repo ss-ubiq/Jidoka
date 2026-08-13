@@ -125,6 +125,14 @@
   }
 }
 
+
+/* Reserve space for the mobile action bar (fixed, lg:hidden) + iOS safe area. */
+@media (max-width: 1023.98px) {
+  body {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

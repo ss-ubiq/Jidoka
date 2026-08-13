@@ -28,7 +28,7 @@ export function HeroSearch() {
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search products, part numbers, applications or requirements…"
           aria-label="Search products, part numbers, applications or requirements"
-          className="h-14 w-full rounded-lg border border-border-strong bg-surface pl-12 pr-28 text-[0.95rem] text-fg shadow-card outline-none transition-all placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/25"
+          className="h-14 w-full rounded-lg border border-border-strong bg-surface pl-12 pr-28 text-base text-fg sm:text-[0.95rem] shadow-card outline-none transition-all placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/25"
         />
         <button
           type="submit"

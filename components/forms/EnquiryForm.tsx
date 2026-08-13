@@ -196,7 +196,7 @@ const submitLabel: Record<EnquiryMode, string> = {
 };
 
 const inputCls =
-  "h-11 w-full rounded-md border border-border-strong bg-surface px-3.5 text-sm text-fg outline-none transition-colors placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20";
+  "h-11 w-full rounded-md border border-border-strong bg-surface px-3.5 text-base text-fg sm:text-sm outline-none transition-colors placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20";
 
 function FieldGrid({ children }: { children: React.ReactNode }) {
   return <div className="grid gap-5 sm:grid-cols-2">{children}</div>;

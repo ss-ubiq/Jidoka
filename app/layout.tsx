@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { MobileActionBar } from "@/components/site/MobileActionBar";
 import { JsonLd } from "@/components/site/JsonLd";
 import { organizationLd, websiteLd } from "@/lib/jsonld";
 import { site } from "@/lib/site";
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        <MobileActionBar />
       </body>
     </html>
   );

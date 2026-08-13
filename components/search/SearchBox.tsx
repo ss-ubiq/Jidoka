@@ -26,7 +26,7 @@ export function SearchBox({ initial = "" }: { initial?: string }) {
         onChange={(e) => setQ(e.target.value)}
         placeholder="Search products, part numbers, applications or requirements…"
         aria-label="Search"
-        className="h-14 w-full rounded-lg border border-border-strong bg-surface pl-12 pr-28 text-[0.95rem] text-fg shadow-card outline-none transition-all placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/25"
+        className="h-14 w-full rounded-lg border border-border-strong bg-surface pl-12 pr-28 text-base text-fg sm:text-[0.95rem] shadow-card outline-none transition-all placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/25"
       />
       <button type="submit" className="absolute right-2 top-1/2 h-10 -translate-y-1/2 rounded-md bg-accent px-4 text-sm font-medium text-accent-fg transition-all hover:brightness-110">
         Search
