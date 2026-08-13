@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  JIDOKA website design tokens — "Premium Industrial Precision".
+  Graphite neutrals, one steel-blue accent, amber heat signal. Restrained by design.
+  Every color is defined on :root (light) and overridden for dark so the whole system
+  stays consistent across themes. HSL channels are space-separated for Tailwind alpha.
+*/
+:root {
+  --bg: 210 20% 98%;
+  --surface: 0 0% 100%;
+  --surface-2: 210 20% 96.5%;
+  --surface-3: 214 22% 93%;
+  --border: 214 20% 89%;
+  --border-strong: 214 18% 80%;
+  --muted: 215 16% 47%;
+  --fg: 222 34% 11%;
+  --fg-subtle: 215 16% 36%;
+  --ink: 222 40% 9%;
+
+  --accent: 211 90% 42%;
+  --accent-fg: 0 0% 100%;
+  --accent-soft: 211 90% 96%;
+  --heat: 26 90% 50%;
+  --positive: 152 52% 36%;
+  --warning: 38 92% 48%;
+  --danger: 0 72% 48%;
+
+  --shadow: 222 47% 20%;
+  --radius: 12px;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-mono-jetbrains), ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
+}
+
+/* Dark via system preference, unless the user explicitly chose light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: 222 32% 7%;
+    --surface: 222 26% 10%;
+    --surface-2: 222 22% 13%;
+    --surface-3: 222 20% 16%;
+    --border: 222 18% 19%;
+    --border-strong: 222 16% 28%;
+    --muted: 215 15% 62%;
+    --fg: 210 30% 96%;
+    --fg-subtle: 215 16% 68%;
+    --ink: 210 30% 98%;
+
+    --accent: 205 95% 58%;
+    --accent-fg: 222 40% 8%;
+    --accent-soft: 211 60% 16%;
+    --heat: 28 92% 58%;
+    --positive: 152 50% 48%;
+    --warning: 40 92% 58%;
+    --danger: 0 72% 62%;
+
+    --shadow: 0 0% 0%;
+  }
+}
+
+/* Explicit dark toggle wins in both directions. */
+:root[data-theme="dark"] {
+  --bg: 222 32% 7%;
+  --surface: 222 26% 10%;
+  --surface-2: 222 22% 13%;
+  --surface-3: 222 20% 16%;
+  --border: 222 18% 19%;
+  --border-strong: 222 16% 28%;
+  --muted: 215 15% 62%;
+  --fg: 210 30% 96%;
+  --fg-subtle: 215 16% 68%;
+  --ink: 210 30% 98%;
+  --accent: 205 95% 58%;
+  --accent-fg: 222 40% 8%;
+  --accent-soft: 211 60% 16%;
+  --heat: 28 92% 58%;
+  --positive: 152 50% 48%;
+  --warning: 40 92% 58%;
+  --danger: 0 72% 62%;
+  --shadow: 0 0% 0%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-bg text-fg antialiased;
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: hsl(var(--accent) / 0.18);
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
+  }
+  h1, h2, h3, h4 {
+    @apply text-fg;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8 lg:px-12;
+  }
+  /* Small technical eyebrow label used across sections */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.18em] text-muted;
+  }
+  /* Precision hairline used to evoke engineering drawings */
+  .hairline {
+    @apply h-px w-full bg-border;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
