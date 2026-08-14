@@ -20,6 +20,7 @@ export default function ProductsPage() {
         title="Industrial components, organised by engineering family"
         lead="Browse twelve component families ordered by real demand. Open a family to see its subfamilies, catalogue products, technical resources and related components."
         crumbs={[{ label: "Home", href: "/" }, { label: "Products" }]}
+        motif="pin"
       />
 
       <div className="container-page py-14">

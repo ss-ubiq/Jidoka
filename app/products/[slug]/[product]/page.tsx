@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, FileText, HelpCircle, Link2, Factory, Package, ClipboardList } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
+import { motifFor } from "@/components/site/HeaderVisual";
 import { CtaBand, PlaceholderNotice } from "@/components/site/CtaBand";
 import { CatalogueDownload } from "@/components/products/CatalogueDownload";
 import { JsonLd } from "@/components/site/JsonLd";
@@ -60,6 +61,7 @@ export default async function ProductPage({
         title={p.name}
         lead={`${p.name} is part of JIDOKA's ${family.name} range — ${family.tagline.toLowerCase()}.`}
         crumbs={crumbs}
+        motif={motifFor(`${p.name} ${family.slug}`)}
       >
         <div className="flex flex-wrap items-center gap-3">
           <Link

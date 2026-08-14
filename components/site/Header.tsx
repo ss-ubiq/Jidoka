@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
@@ -23,6 +23,29 @@ export function Header() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Reading-progress hairline under the header — updates a CSS var directly
+  // (no re-renders) via rAF.
+  const progressRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const p = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+        progressRef.current?.style.setProperty("--scroll-progress", p.toFixed(4));
+      });
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
   // Close menus on route change.
@@ -104,6 +127,13 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      {/* Reading-progress hairline */}
+      <div
+        ref={progressRef}
+        aria-hidden
+        className="scroll-progress absolute inset-x-0 bottom-[-1px] h-[2px] bg-accent"
+      />
 
       {/* Desktop mega-menu panel */}
       {openMenu && menusWithPanels.has(openMenu) && (

@@ -16,6 +16,7 @@ export default function Page() {
   return (
     <>
       <PageHeader
+        motif="sheet"
         eyebrow="JIDOKA Technical Library"
         title="Catalogues, datasheets, CAD & guides"
         lead="Technical documentation to help you specify with confidence. We publish only resources that genuinely exist — nothing is fabricated."

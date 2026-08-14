@@ -14,6 +14,7 @@ export default function Page() {
   return (
     <>
       <PageHeader
+        motif="factory"
         eyebrow="Contact"
         title="Talk to JIDOKA"
         lead="Reach us directly, start a structured technical enquiry, or visit our office in Noida."

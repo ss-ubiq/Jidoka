@@ -1,4 +1,5 @@
 import { PageHeader, type Crumb } from "@/components/site/PageHeader";
+import { type HeaderMotif } from "@/components/site/HeaderVisual";
 import { EnquiryForm, type EnquiryMode } from "./EnquiryForm";
 import { ShieldCheck, Clock, FileCheck2 } from "lucide-react";
 
@@ -16,6 +17,7 @@ export function FormPage({
   crumbs,
   note,
   reference,
+  motif = "sheet",
 }: {
   mode: EnquiryMode;
   eyebrow: string;
@@ -24,10 +26,11 @@ export function FormPage({
   crumbs: Crumb[];
   note?: React.ReactNode;
   reference?: string;
+  motif?: HeaderMotif;
 }) {
   return (
     <>
-      <PageHeader eyebrow={eyebrow} title={title} lead={lead} crumbs={crumbs} />
+      <PageHeader eyebrow={eyebrow} title={title} lead={lead} crumbs={crumbs} motif={motif} />
       <div className="container-page grid gap-12 py-14 lg:grid-cols-[1fr_18rem]">
         <div className="max-w-2xl">
           {note && (

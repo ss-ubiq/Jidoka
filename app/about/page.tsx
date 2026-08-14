@@ -13,7 +13,7 @@ const pillars = [
 export default function Page() {
   return (
     <>
-      <PageHeader eyebrow="About JIDOKA" title="An engineering partner for industrial components" lead="JIDOKA combines a broad, engineering-organised component range with genuine technical support — so you don't have to figure everything out on your own." crumbs={[{ label: "Home", href: "/" }, { label: "About" }]} />
+      <PageHeader motif="caliper" eyebrow="About JIDOKA" title="An engineering partner for industrial components" lead="JIDOKA combines a broad, engineering-organised component range with genuine technical support — so you don't have to figure everything out on your own." crumbs={[{ label: "Home", href: "/" }, { label: "About" }]} />
       <div className="container-page py-14">
         <div className="grid gap-4 lg:grid-cols-3">
           {pillars.map((p) => (

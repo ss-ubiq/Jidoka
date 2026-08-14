@@ -125,6 +125,300 @@
   }
 }
 
+/* ============================================================
+   Motion system — "Precision in motion".
+   Scroll reveals, 3D tilt cards, cursor spotlight, technical-
+   drawing animations. Everything transform/opacity only; the
+   global prefers-reduced-motion block below neutralises it all.
+   ============================================================ */
+
+/* --- Scroll reveal (components/motion/Reveal.tsx) ---
+   SSR markup carries no data-reveal, so content is always visible
+   without JS; hydration sets "out" then flips to "in" on intersect. */
+.reveal {
+  transition-property: opacity, transform, filter;
+  transition-duration: 0.8s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal[data-reveal="out"] {
+  opacity: 0;
+}
+.reveal-up[data-reveal="out"] {
+  transform: translateY(36px);
+}
+.reveal-left[data-reveal="out"] {
+  transform: translateX(-28px);
+}
+.reveal-scale[data-reveal="out"] {
+  transform: scale(0.96) translateY(12px);
+}
+.reveal-blur[data-reveal="out"] {
+  transform: translateY(20px);
+  filter: blur(8px);
+}
+.reveal[data-reveal="in"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+/* Eyebrow rule grows in as its section reveals */
+.reveal[data-reveal="out"] .eyebrow > span:first-child {
+  width: 0;
+}
+.eyebrow > span:first-child {
+  transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+
+/* --- 3D tilt cards (components/motion/TiltCard.tsx + MotionAuto.tsx) ---
+   Self-contained perspective so the class also works applied directly to a
+   card with no wrapper (the auto-motion engine does this on inner pages).
+   The transition list keeps Tailwind hover colour/shadow easing alive. */
+.tilt-wrap {
+  perspective: 1000px;
+}
+.tilt-card {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0);
+  transform-style: preserve-3d;
+  transition:
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    color 0.2s ease;
+  will-change: transform;
+}
+.tilt-card.is-tilting {
+  transition:
+    transform 0.08s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    color 0.2s ease;
+}
+/* Cursor-tracking glare/spotlight overlay inside a tilt card */
+.card-spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 50%),
+    hsl(var(--accent) / 0.1),
+    transparent 65%
+  );
+}
+.card-spotlight:hover::after {
+  opacity: 1;
+}
+
+/* --- Primary button sheen sweep --- */
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.btn-sheen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -75%;
+  width: 50%;
+  transform: skewX(-18deg);
+  background: linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.28), transparent);
+  transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-sheen:hover::before {
+  left: 125%;
+}
+
+/* --- Hero: drifting blueprint grid --- */
+@keyframes grid-pan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 44px 44px;
+  }
+}
+.hero-grid {
+  animation: grid-pan 14s linear infinite;
+}
+
+/* --- Hero: technical drawing (components/home/HeroVisual.tsx) --- */
+/* Strokes use pathLength=1 so one rule draws every shape. */
+.draw-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-stroke 1.6s cubic-bezier(0.5, 0, 0.2, 1) forwards;
+  animation-delay: var(--draw-delay, 0s);
+}
+@keyframes draw-stroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/* Dash-dot centrelines march slowly, like a live drawing */
+.centerline {
+  stroke-dasharray: 14 5 3 5;
+  animation: dash-march 2.6s linear infinite;
+}
+@keyframes dash-march {
+  to {
+    stroke-dashoffset: -27;
+  }
+}
+/* Die spring breathing compression */
+.spring-breathe {
+  animation: spring-breathe 4.5s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+@keyframes spring-breathe {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.94);
+  }
+}
+/* Blueprint scanner sweep across the drawing (element is ~1/5 wide,
+   so it travels from fully off-left to fully off-right of the panel). */
+@keyframes scan-sweep {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  44% {
+    opacity: 1;
+  }
+  52% {
+    transform: translateX(620%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(620%);
+    opacity: 0;
+  }
+}
+.scan-line {
+  animation: scan-sweep 8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: 2.4s;
+}
+/* Fade-out state driven by JS mouse parallax */
+.parallax-layer {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* Counter-rotating pinion + pneumatic piston stroke (HeaderVisual) */
+.animate-spin-rev {
+  animation: spin-rev 20s linear infinite;
+}
+@keyframes spin-rev {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+.piston-stroke {
+  animation: piston-stroke 3.8s ease-in-out infinite;
+}
+/* Gripper fingers open/close (HeaderVisual gripper motif) */
+.gripper-l {
+  animation: grip-l 3.2s ease-in-out infinite;
+}
+.gripper-r {
+  animation: grip-r 3.2s ease-in-out infinite;
+}
+@keyframes grip-l {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(7px);
+  }
+}
+@keyframes grip-r {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-7px);
+  }
+}
+/* Caliper sliding jaw (HeaderVisual caliper motif) */
+.caliper-slide {
+  animation: caliper-slide 4.2s ease-in-out infinite;
+}
+@keyframes caliper-slide {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(14px);
+  }
+}
+/* Exploded assembly parts converging (HeaderVisual assembly motif) */
+.explode-a {
+  animation: explode-a 4.4s ease-in-out infinite;
+}
+.explode-b {
+  animation: explode-b 4.4s ease-in-out infinite;
+}
+@keyframes explode-a {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(12px);
+  }
+}
+@keyframes explode-b {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+@keyframes piston-stroke {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-20px);
+  }
+}
+
+/* --- Family-code ticker marquee --- */
+.marquee-mask {
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* --- Header scroll progress hairline --- */
+.scroll-progress {
+  transform-origin: left;
+  transform: scaleX(var(--scroll-progress, 0));
+}
 
 /* Reserve space for the mobile action bar (fixed, lg:hidden) + iOS safe area. */
 @media (max-width: 1023.98px) {

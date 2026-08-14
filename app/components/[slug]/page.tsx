@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, CheckCircle2, HelpCircle, Layers, Link2 } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
+import { motifFor } from "@/components/site/HeaderVisual";
 import { CtaBand } from "@/components/site/CtaBand";
 import { JsonLd } from "@/components/site/JsonLd";
 import { faqLd, breadcrumbLd } from "@/lib/jsonld";
@@ -41,7 +42,7 @@ export default async function KeywordPage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <JsonLd data={[faqLd(k.faqs), breadcrumbLd(crumbs)]} />
-      <PageHeader eyebrow="Component Guide" title={k.term} lead={k.intro} crumbs={crumbs}>
+      <PageHeader eyebrow="Component Guide" title={k.term} lead={k.intro} crumbs={crumbs} motif={motifFor(k.slug)}>
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href={`/request-a-quote?ref=${encodeURIComponent(refLabel)}`}

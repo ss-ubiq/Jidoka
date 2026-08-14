@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { Reveal } from "@/components/motion/Reveal";
 
 /** Reusable "next action" band so every page has an appropriate CTA (§67). */
 export function CtaBand({
@@ -14,8 +15,16 @@ export function CtaBand({
   secondary?: { label: string; href: string };
 }) {
   return (
-    <section className="border-t border-border bg-surface-2/40">
-      <div className="container-page flex flex-col items-start justify-between gap-6 py-14 md:flex-row md:items-center">
+    <section className="relative overflow-hidden border-t border-border bg-surface-2/40">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-grid opacity-[0.3] [background-size:44px_44px] [mask-image:radial-gradient(ellipse_60%_100%_at_85%_50%,black,transparent)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-20 top-1/2 h-56 w-56 -translate-y-1/2 rounded-full bg-accent/[0.08] blur-3xl"
+      />
+      <Reveal className="container-page relative flex flex-col items-start justify-between gap-6 py-14 md:flex-row md:items-center">
         <div>
           <h2 className="max-w-xl text-2xl font-semibold tracking-tight text-fg">{title}</h2>
           {body && <p className="mt-2 max-w-lg text-fg-subtle">{body}</p>}
@@ -23,7 +32,7 @@ export function CtaBand({
         <div className="flex shrink-0 flex-wrap gap-3">
           <Link
             href={primary.href}
-            className="inline-flex h-12 items-center gap-2 rounded-md bg-accent px-6 font-medium text-accent-fg shadow-card transition-all hover:brightness-110"
+            className="btn-sheen inline-flex h-12 items-center gap-2 rounded-md bg-accent px-6 font-medium text-accent-fg shadow-card transition-all hover:-translate-y-px hover:brightness-110 hover:shadow-card-lg"
           >
             {primary.label} <ArrowRight className="h-4 w-4" />
           </Link>
@@ -36,7 +45,7 @@ export function CtaBand({
             </Link>
           )}
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

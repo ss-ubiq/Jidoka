@@ -30,6 +30,7 @@ export default function Page() {
   return (
     <>
       <PageHeader
+        motif="caliper"
         eyebrow="Engineering"
         title="Compare components"
         lead="A side-by-side engineering comparison — family, category, applications and catalogue. This is a technical decision aid, never a shopping basket."

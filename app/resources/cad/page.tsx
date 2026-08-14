@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "CAD & Drawings", description: "Reque
 export default function Page() {
   return (
     <>
-      <PageHeader eyebrow="Technical Library" title="CAD & drawings" lead="CAD models and dimensioned drawings to drop straight into your assembly — available per product." crumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "CAD & Drawings" }]} />
+      <PageHeader eyebrow="Technical Library" title="CAD & drawings" lead="CAD models and dimensioned drawings to drop straight into your assembly — available per product." crumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "CAD & Drawings" }]} motif="cube" />
       <div className="container-page py-14 max-w-3xl">
         <PlaceholderNotice>CAD availability varies by product and is being published progressively. Request the CAD or drawing you need for a specific component and we&apos;ll provide it where available.</PlaceholderNotice>
       </div>

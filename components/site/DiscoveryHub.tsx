@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Boxes, ListChecks } from "lucide-react";
 import { PageHeader, type Crumb } from "@/components/site/PageHeader";
+import { motifFor, type HeaderMotif } from "@/components/site/HeaderVisual";
 import { CtaBand } from "@/components/site/CtaBand";
 import { familyNeed, type DiscoveryItem } from "@/data/discovery";
 import type { Family } from "@/data/families";
@@ -13,6 +14,7 @@ export function DiscoveryHub({
   basePath,
   items,
   crumbs,
+  motif = "gear",
 }: {
   eyebrow: string;
   title: string;
@@ -20,10 +22,11 @@ export function DiscoveryHub({
   basePath: string;
   items: DiscoveryItem[];
   crumbs: Crumb[];
+  motif?: HeaderMotif;
 }) {
   return (
     <>
-      <PageHeader eyebrow={eyebrow} title={title} lead={lead} crumbs={crumbs} />
+      <PageHeader eyebrow={eyebrow} title={title} lead={lead} crumbs={crumbs} motif={motif} />
       <div className="container-page py-14">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
@@ -66,7 +69,13 @@ export function DiscoveryDetail({
 }) {
   return (
     <>
-      <PageHeader eyebrow={kind} title={item.name} lead={item.overview ?? item.blurb} crumbs={crumbs} />
+      <PageHeader
+        eyebrow={kind}
+        title={item.name}
+        lead={item.overview ?? item.blurb}
+        crumbs={crumbs}
+        motif={motifFor(item.slug)}
+      />
 
       <div className="container-page grid gap-12 py-14 lg:grid-cols-[1fr_17rem]">
         <div className="space-y-14">

@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "Privacy Policy", description: "How J
 export default function Page() {
   return (
     <>
-      <PageHeader eyebrow="Legal" title="Privacy Policy" lead="How JIDOKA handles information submitted through this website." crumbs={[{ label: "Home", href: "/" }, { label: "Privacy Policy" }]} />
+      <PageHeader motif="sheet" eyebrow="Legal" title="Privacy Policy" lead="How JIDOKA handles information submitted through this website." crumbs={[{ label: "Home", href: "/" }, { label: "Privacy Policy" }]} />
       <div className="container-page py-14 max-w-3xl">
         <PlaceholderNotice>The final Privacy Policy text is being prepared with JIDOKA. This site collects only the information you choose to submit in an enquiry (your contact details, requirement and any files) and uses it solely to respond to that enquiry. It never publishes customer or sales data.</PlaceholderNotice>
       </div>

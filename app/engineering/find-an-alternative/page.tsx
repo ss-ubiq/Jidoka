@@ -5,6 +5,7 @@ export default function Page() {
   return (
     <FormPage
       mode="alternative"
+      motif="pin"
       eyebrow="Find an Alternative"
       title="Find an alternative or replacement"
       lead="Enter the existing part number, manufacturer or supplier and attach a drawing, photo or specification. We review it and propose an equivalent only when technical equivalence is verified — never automatically."

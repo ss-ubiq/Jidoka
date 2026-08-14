@@ -26,6 +26,7 @@ export default function ComponentsHub() {
   return (
     <>
       <PageHeader
+        motif="draft"
         eyebrow="Component Guides"
         title="Industrial components, explained and quoted"
         lead="Plain-language engineering guides to the components JIDOKA supplies — what they are, the types, how to select them, and how to get them quoted."

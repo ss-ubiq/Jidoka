@@ -5,6 +5,7 @@ export default function Page() {
   return (
     <FormPage
       mode="custom"
+      motif="draft"
       eyebrow="Custom Components"
       title="Need a custom component?"
       lead="Can't find the exact component? Send a drawing, CAD, PDF or image with your material, dimensions, tolerance, finish and quantity. We'll review it — manufacturing capability is confirmed per enquiry, never assumed."

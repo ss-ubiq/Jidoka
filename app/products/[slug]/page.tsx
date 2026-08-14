@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, FileText, HelpCircle, Layers, Link2, Factory } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
+import { motifFor } from "@/components/site/HeaderVisual";
 import { CtaBand, PlaceholderNotice } from "@/components/site/CtaBand";
 import { CatalogueDownload } from "@/components/products/CatalogueDownload";
 import { JsonLd } from "@/components/site/JsonLd";
@@ -46,6 +47,7 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
         title={family.name}
         lead={family.blurb}
         crumbs={crumbs}
+        motif={motifFor(family.slug)}
       >
         <div className="flex flex-wrap items-center gap-3">
           {family.status === "catalogue" ? (

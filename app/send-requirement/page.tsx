@@ -5,6 +5,7 @@ export default function Page() {
   return (
     <FormPage
       mode="requirement"
+      motif="assembly"
       eyebrow="Send Requirement"
       title="Tell us what you are trying to build"
       lead="You don't need a part number. Describe the application, what the component must do, and upload a drawing or photo — we'll help you find the right component."

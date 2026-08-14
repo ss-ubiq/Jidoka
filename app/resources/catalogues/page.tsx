@@ -21,6 +21,7 @@ export default function CatalogueLibraryPage() {
   return (
     <>
       <PageHeader
+        motif="sheet"
         eyebrow="Technical Library"
         title="Catalogue Library"
         lead="Download product catalogues across the JIDOKA range. Each catalogue carries the dimensions, materials and variants for its family."

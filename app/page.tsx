@@ -14,6 +14,10 @@ import {
   Upload,
 } from "lucide-react";
 import { HeroSearch } from "@/components/home/HeroSearch";
+import { HeroVisual } from "@/components/home/HeroVisual";
+import { HeroTicker } from "@/components/home/HeroTicker";
+import { Reveal } from "@/components/motion/Reveal";
+import { TiltCard } from "@/components/motion/TiltCard";
 import { Section, SectionHeading, Eyebrow, Badge } from "@/components/ui/Primitives";
 import { LinkButton } from "@/components/ui/Button";
 import { familiesByDemand } from "@/data/families";
@@ -72,55 +76,81 @@ const resources = [
   { icon: MessageSquareText, title: "Selection Guides & FAQs", href: "/resources", desc: "Help choosing the right component." },
 ];
 
+/** Staggered entrance delay for the hero cascade. */
+const rise = (i: number) => ({ animationDelay: `${i * 110}ms` });
+
 export default function HomePage() {
   return (
     <>
       {/* ===================== HERO ===================== */}
       <section className="relative overflow-hidden border-b border-border">
-        {/* Engineering grid backdrop */}
+        {/* Engineering grid backdrop — slowly drifting */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-grid opacity-[0.5] [background-size:44px_44px] [mask-image:radial-gradient(ellipse_75%_60%_at_50%_0%,black,transparent)]"
+          className="hero-grid pointer-events-none absolute inset-0 bg-grid opacity-[0.5] [background-size:44px_44px] [mask-image:radial-gradient(ellipse_75%_60%_at_50%_0%,black,transparent)]"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-40 right-0 h-[32rem] w-[32rem] rounded-full bg-accent/10 blur-3xl"
+          className="pointer-events-none absolute -top-40 right-0 h-[32rem] w-[32rem] animate-pulse-soft rounded-full bg-accent/10 blur-3xl"
         />
-        <div className="container-page relative py-20 sm:py-28 lg:py-32">
-          <div className="max-w-3xl">
-            <Eyebrow>Industrial Components · Engineering Solutions</Eyebrow>
-            <h1 className="mt-5 text-display-lg font-bold text-fg">
-              Industrial Components.
-              <br />
-              <span className="text-accent">Engineering Solutions.</span>
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-fg-subtle sm:text-xl">
-              Precision components and technical solutions for automation, mould &amp; die, machine
-              building and industrial manufacturing.
-            </p>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-32 -left-24 h-[24rem] w-[24rem] rounded-full bg-heat/[0.06] blur-3xl"
+        />
+        <div className="container-page relative py-20 sm:py-24 lg:py-28">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_minmax(0,30rem)]">
+            <div className="max-w-3xl">
+              <div className="animate-hero-rise" style={rise(0)}>
+                <Eyebrow>Industrial Components · Engineering Solutions</Eyebrow>
+              </div>
+              <h1 className="mt-5 text-display-lg font-bold text-fg">
+                <span className="block animate-hero-rise" style={rise(1)}>
+                  Industrial Components.
+                </span>
+                <span className="block animate-hero-rise text-accent" style={rise(2)}>
+                  Engineering Solutions.
+                </span>
+              </h1>
+              <p
+                className="mt-6 max-w-2xl animate-hero-rise text-lg leading-relaxed text-fg-subtle sm:text-xl"
+                style={rise(3)}
+              >
+                Precision components and technical solutions for automation, mould &amp; die, machine
+                building and industrial manufacturing.
+              </p>
 
-            <div className="mt-8">
-              <HeroSearch />
+              <div className="mt-8 animate-hero-rise" style={rise(4)}>
+                <HeroSearch />
+              </div>
+
+              <div className="mt-8 flex animate-hero-rise flex-wrap items-center gap-3" style={rise(5)}>
+                <LinkButton href="/request-a-quote" size="lg">
+                  Request a Quote <ArrowRight className="h-4 w-4" />
+                </LinkButton>
+                <LinkButton href="/products" size="lg" variant="secondary">
+                  Explore Products
+                </LinkButton>
+                <LinkButton href="/engineering-desk" size="lg" variant="ghost">
+                  Talk to an Engineer
+                </LinkButton>
+              </div>
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <LinkButton href="/request-a-quote" size="lg">
-                Request a Quote <ArrowRight className="h-4 w-4" />
-              </LinkButton>
-              <LinkButton href="/products" size="lg" variant="secondary">
-                Explore Products
-              </LinkButton>
-              <LinkButton href="/engineering-desk" size="lg" variant="ghost">
-                Talk to an Engineer
-              </LinkButton>
+            {/* Animated technical drawing — the JIDOKA character piece */}
+            <div className="hidden animate-hero-rise lg:block" style={rise(3)}>
+              <HeroVisual />
             </div>
           </div>
 
           {/* Not sure what you need? */}
-          <div className="mt-14 max-w-3xl rounded-xl border border-accent/20 bg-accent-soft/60 p-6 sm:p-7">
+          <div
+            className="mt-14 max-w-3xl animate-hero-rise rounded-xl border border-accent/20 bg-accent-soft/60 p-6 backdrop-blur-sm sm:p-7"
+            style={rise(6)}
+          >
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div className="flex items-start gap-4">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-accent/10 text-accent">
+                <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-accent/10 text-accent">
+                  <span aria-hidden className="absolute inset-0 animate-pulse-soft rounded-lg ring-1 ring-accent/40" />
                   <Upload className="h-5 w-5" />
                 </span>
                 <div>
@@ -132,113 +162,144 @@ export default function HomePage() {
               </div>
               <Link
                 href="/send-requirement"
-                className="inline-flex shrink-0 items-center gap-1.5 font-semibold text-accent hover:underline"
+                className="group inline-flex shrink-0 items-center gap-1.5 font-semibold text-accent hover:underline"
               >
-                Get technical assistance <ArrowRight className="h-4 w-4" />
+                Get technical assistance
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
         </div>
+
+        {/* Family ticker */}
+        <HeroTicker />
       </section>
 
       {/* ===================== DISCOVER JIDOKA — 4 PATHS ===================== */}
       <Section className="border-b border-border">
-        <SectionHeading
-          eyebrow="Discover JIDOKA"
-          title="Four ways to find what you need"
-          lead="Start from the product, the thing you're building, your industry — or just tell us your requirement."
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow="Discover JIDOKA"
+            title="Four ways to find what you need"
+            lead="Start from the product, the thing you're building, your industry — or just tell us your requirement."
+          />
+        </Reveal>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {discoveryPaths.map((p) => (
-            <Link
-              key={p.title}
-              href={p.href}
-              className="group relative flex flex-col justify-between rounded-xl border border-border bg-surface p-6 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-card-hover"
-            >
-              <div>
-                <span className="grid h-11 w-11 place-items-center rounded-lg border border-border bg-surface-2 text-accent transition-colors group-hover:border-accent/40">
-                  <p.icon className="h-[1.35rem] w-[1.35rem]" />
-                </span>
-                <h3 className="mt-5 text-lg font-semibold text-fg">{p.title}</h3>
-                <p className="mt-1.5 text-sm text-fg-subtle">&ldquo;{p.line}&rdquo;</p>
-              </div>
-              <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
-                {p.cta}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </Link>
+          {discoveryPaths.map((p, i) => (
+            <Reveal key={p.title} delay={i * 80} className="h-full">
+              <TiltCard>
+                <Link
+                  href={p.href}
+                  className="group relative flex h-full flex-col justify-between rounded-xl border border-border bg-surface p-6 shadow-card transition-all duration-300 hover:border-accent/40 hover:shadow-card-hover"
+                >
+                  <div>
+                    <span className="grid h-11 w-11 place-items-center rounded-lg border border-border bg-surface-2 text-accent transition-all duration-300 group-hover:-rotate-6 group-hover:scale-110 group-hover:border-accent/40">
+                      <p.icon className="h-[1.35rem] w-[1.35rem]" />
+                    </span>
+                    <h3 className="mt-5 text-lg font-semibold text-fg">{p.title}</h3>
+                    <p className="mt-1.5 text-sm text-fg-subtle">&ldquo;{p.line}&rdquo;</p>
+                  </div>
+                  <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
+                    {p.cta}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </TiltCard>
+            </Reveal>
           ))}
         </div>
       </Section>
 
       {/* ===================== PRODUCT FAMILIES ===================== */}
       <Section className="border-b border-border bg-surface-2/40">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <SectionHeading
-            eyebrow="Product Families"
-            title="A catalogue organised the way engineers think"
-            lead="Twelve component families, ordered by real demand. Every family links to its subfamilies, technical resources and a quote request."
-          />
-          <LinkButton href="/products" variant="secondary" className="shrink-0">
-            View all products <ArrowRight className="h-4 w-4" />
-          </LinkButton>
-        </div>
+        <Reveal>
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <SectionHeading
+              eyebrow="Product Families"
+              title="A catalogue organised the way engineers think"
+              lead="Twelve component families, ordered by real demand. Every family links to its subfamilies, technical resources and a quote request."
+            />
+            <LinkButton href="/products" variant="secondary" className="shrink-0">
+              View all products <ArrowRight className="h-4 w-4" />
+            </LinkButton>
+          </div>
+        </Reveal>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {familiesByDemand.map((f) => (
-            <Link
-              key={f.id}
-              href={`/products/${f.slug}`}
-              className="group flex flex-col rounded-xl border border-border bg-surface p-6 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-card-hover"
-            >
-              <div className="flex items-center justify-between">
-                <span className="grid h-9 w-9 place-items-center rounded-md border border-border bg-surface-2 font-mono text-xs font-semibold text-muted transition-colors group-hover:border-accent/40 group-hover:text-accent">
-                  {f.code}
-                </span>
-                {f.status === "catalogue" ? (
-                  <Badge tone="positive">In catalogue</Badge>
-                ) : (
-                  <Badge tone="heat">High demand</Badge>
-                )}
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-fg group-hover:text-accent">{f.name}</h3>
-              <p className="mt-1.5 flex-1 text-sm leading-relaxed text-fg-subtle">{f.tagline}</p>
-              <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
-                Explore family
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </Link>
+          {familiesByDemand.map((f, i) => (
+            <Reveal key={f.id} delay={(i % 3) * 90} className="h-full">
+              <TiltCard max={5}>
+                <Link
+                  href={`/products/${f.slug}`}
+                  className="group flex h-full flex-col rounded-xl border border-border bg-surface p-6 shadow-card transition-all duration-300 hover:border-accent/40 hover:shadow-card-hover"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="grid h-9 w-9 place-items-center rounded-md border border-border bg-surface-2 font-mono text-xs font-semibold text-muted transition-colors group-hover:border-accent/40 group-hover:text-accent">
+                      {f.code}
+                    </span>
+                    {f.status === "catalogue" ? (
+                      <Badge tone="positive">In catalogue</Badge>
+                    ) : (
+                      <Badge tone="heat">High demand</Badge>
+                    )}
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-fg group-hover:text-accent">{f.name}</h3>
+                  <p className="mt-1.5 flex-1 text-sm leading-relaxed text-fg-subtle">{f.tagline}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
+                    Explore family
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </TiltCard>
+            </Reveal>
           ))}
         </div>
       </Section>
 
       {/* ===================== SOLUTIONS ===================== */}
       <Section className="border-b border-border">
-        <SectionHeading
-          eyebrow="Solutions"
-          title="Components brought together around what you build"
-          lead="When you know the machine or the discipline but not every part number, start from a solution."
-        />
-        <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-          {solutions.map((s) => (
-            <Link
-              key={s.title}
-              href={s.href}
-              className="group flex flex-col gap-2 bg-surface p-7 transition-colors hover:bg-surface-2"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-fg group-hover:text-accent">{s.title}</h3>
-                <ArrowRight className="h-4 w-4 text-muted transition-all group-hover:translate-x-0.5 group-hover:text-accent" />
-              </div>
-              <p className="text-sm leading-relaxed text-fg-subtle">{s.desc}</p>
-            </Link>
-          ))}
-        </div>
+        <Reveal>
+          <SectionHeading
+            eyebrow="Solutions"
+            title="Components brought together around what you build"
+            lead="When you know the machine or the discipline but not every part number, start from a solution."
+          />
+        </Reveal>
+        <Reveal delay={120}>
+          <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+            {solutions.map((s) => (
+              <Link
+                key={s.title}
+                href={s.href}
+                className="group relative flex flex-col gap-2 bg-surface p-7 transition-colors hover:bg-surface-2"
+              >
+                <span
+                  aria-hidden
+                  className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-accent transition-transform duration-300 ease-precise group-hover:scale-x-100"
+                />
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-fg group-hover:text-accent">{s.title}</h3>
+                  <ArrowRight className="h-4 w-4 text-muted transition-all group-hover:translate-x-1 group-hover:text-accent" />
+                </div>
+                <p className="text-sm leading-relaxed text-fg-subtle">{s.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </Reveal>
       </Section>
 
       {/* ===================== ENGINEERING DESK ===================== */}
-      <Section className="border-b border-border bg-ink text-bg [--fg:210_30%_96%] [--fg-subtle:215_16%_75%]">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.3fr_1fr]">
-          <div>
+      <Section className="relative overflow-hidden border-b border-border bg-ink text-bg [--fg:210_30%_96%] [--fg-subtle:215_16%_75%]">
+        {/* Blueprint backdrop for the dark band */}
+        <div
+          aria-hidden
+          className="hero-grid pointer-events-none absolute inset-0 bg-grid opacity-[0.14] [background-size:44px_44px] [mask-image:radial-gradient(ellipse_80%_90%_at_70%_50%,black,transparent)]"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 top-1/2 h-[26rem] w-[26rem] -translate-y-1/2 animate-pulse-soft rounded-full bg-accent/15 blur-3xl"
+        />
+        <div className="relative grid items-center gap-10 lg:grid-cols-[1.3fr_1fr]">
+          <Reveal variant="left">
             <Eyebrow className="text-accent">JIDOKA Engineering Desk</Eyebrow>
             <h2 className="mt-5 text-heading-lg font-semibold text-bg">
               Need help selecting a component?
@@ -259,7 +320,7 @@ export default function HomePage() {
                 Find an Alternative
               </Link>
             </div>
-          </div>
+          </Reveal>
           <ul className="grid gap-3">
             {[
               "I need a quotation",
@@ -267,16 +328,15 @@ export default function HomePage() {
               "I need an alternative / replacement",
               "I need a custom component",
               "I have a BOM to review",
-            ].map((item) => (
-              <li
-                key={item}
-                className="flex items-center gap-3 rounded-lg border border-bg/15 bg-bg/[0.06] px-4 py-3.5 text-sm font-medium text-bg/90"
-              >
-                <span className="grid h-6 w-6 shrink-0 place-items-center rounded border border-accent/40 text-accent">
-                  <ArrowRight className="h-3.5 w-3.5" />
+            ].map((item, i) => (
+              <Reveal key={item} as="li" variant="left" delay={i * 90}>
+                <span className="flex items-center gap-3 rounded-lg border border-bg/15 bg-bg/[0.06] px-4 py-3.5 text-sm font-medium text-bg/90 transition-all duration-300 hover:translate-x-1 hover:border-accent/40 hover:bg-bg/10">
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded border border-accent/40 text-accent">
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </span>
+                  {item}
                 </span>
-                {item}
-              </li>
+              </Reveal>
             ))}
           </ul>
         </div>
@@ -284,49 +344,60 @@ export default function HomePage() {
 
       {/* ===================== WHY JIDOKA ===================== */}
       <Section className="border-b border-border">
-        <SectionHeading
-          eyebrow="Why JIDOKA"
-          title="An engineering partner, not an online shop"
-          lead="We help industrial companies find, specify, source and discuss components — with the technical understanding that turns a part number into the right decision."
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow="Why JIDOKA"
+            title="An engineering partner, not an online shop"
+            lead="We help industrial companies find, specify, source and discuss components — with the technical understanding that turns a part number into the right decision."
+          />
+        </Reveal>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {whyJidoka.map((w) => (
-            <div key={w.title} className="rounded-xl border border-border bg-surface p-6 shadow-card">
-              <span className="grid h-11 w-11 place-items-center rounded-lg bg-accent-soft text-accent">
-                <w.icon className="h-[1.35rem] w-[1.35rem]" />
-              </span>
-              <h3 className="mt-5 text-base font-semibold text-fg">{w.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-fg-subtle">{w.desc}</p>
-            </div>
+          {whyJidoka.map((w, i) => (
+            <Reveal key={w.title} delay={i * 80} className="h-full">
+              <TiltCard max={5}>
+                <div className="group h-full rounded-xl border border-border bg-surface p-6 shadow-card transition-colors duration-300 hover:border-accent/30">
+                  <span className="grid h-11 w-11 place-items-center rounded-lg bg-accent-soft text-accent transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                    <w.icon className="h-[1.35rem] w-[1.35rem]" />
+                  </span>
+                  <h3 className="mt-5 text-base font-semibold text-fg">{w.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-subtle">{w.desc}</p>
+                </div>
+              </TiltCard>
+            </Reveal>
           ))}
         </div>
       </Section>
 
       {/* ===================== TECHNICAL RESOURCES ===================== */}
       <Section className="bg-surface-2/40">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <SectionHeading
-            eyebrow="Technical Resources"
-            title="Catalogues, datasheets, CAD & guides"
-            lead="Technical documentation to specify with confidence. We publish resources that genuinely exist — nothing is fabricated."
-          />
-          <LinkButton href="/resources" variant="secondary" className="shrink-0">
-            Technical library <ArrowRight className="h-4 w-4" />
-          </LinkButton>
-        </div>
+        <Reveal>
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <SectionHeading
+              eyebrow="Technical Resources"
+              title="Catalogues, datasheets, CAD & guides"
+              lead="Technical documentation to specify with confidence. We publish resources that genuinely exist — nothing is fabricated."
+            />
+            <LinkButton href="/resources" variant="secondary" className="shrink-0">
+              Technical library <ArrowRight className="h-4 w-4" />
+            </LinkButton>
+          </div>
+        </Reveal>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {resources.map((r) => (
-            <Link
-              key={r.title}
-              href={r.href}
-              className="group flex flex-col rounded-xl border border-border bg-surface p-6 shadow-card transition-all hover:border-accent/40 hover:shadow-card-hover"
-            >
-              <span className="grid h-11 w-11 place-items-center rounded-lg border border-border bg-surface-2 text-accent">
-                <r.icon className="h-[1.35rem] w-[1.35rem]" />
-              </span>
-              <h3 className="mt-5 text-base font-semibold text-fg group-hover:text-accent">{r.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-fg-subtle">{r.desc}</p>
-            </Link>
+          {resources.map((r, i) => (
+            <Reveal key={r.title} delay={i * 80} className="h-full">
+              <TiltCard max={5}>
+                <Link
+                  href={r.href}
+                  className="group flex h-full flex-col rounded-xl border border-border bg-surface p-6 shadow-card transition-all hover:border-accent/40 hover:shadow-card-hover"
+                >
+                  <span className="grid h-11 w-11 place-items-center rounded-lg border border-border bg-surface-2 text-accent transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                    <r.icon className="h-[1.35rem] w-[1.35rem]" />
+                  </span>
+                  <h3 className="mt-5 text-base font-semibold text-fg group-hover:text-accent">{r.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-subtle">{r.desc}</p>
+                </Link>
+              </TiltCard>
+            </Reveal>
           ))}
         </div>
       </Section>

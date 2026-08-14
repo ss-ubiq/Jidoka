@@ -80,11 +80,36 @@ const config: Config = {
           from: { opacity: "0", transform: "scale(0.98) translateY(4px)" },
           to: { opacity: "1", transform: "scale(1) translateY(0)" },
         },
+        "hero-rise": {
+          from: { opacity: "0", transform: "translateY(26px)", filter: "blur(6px)" },
+          to: { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
+        },
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(-6px)" },
+          "50%": { transform: "translateY(6px)" },
+        },
+        "pulse-soft": {
+          "0%, 100%": { opacity: "0.35" },
+          "50%": { opacity: "0.9" },
+        },
+        "spin-slow": {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
         "fade-in-fast": "fade-in-fast 0.3s ease both",
         "scale-in": "scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "hero-rise": "hero-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",
+        marquee: "marquee 48s linear infinite",
+        "float-slow": "float-slow 7s ease-in-out infinite",
+        "pulse-soft": "pulse-soft 3.2s ease-in-out infinite",
+        "spin-slow": "spin-slow 28s linear infinite",
       },
       transitionTimingFunction: {
         precise: "cubic-bezier(0.16, 1, 0.3, 1)",

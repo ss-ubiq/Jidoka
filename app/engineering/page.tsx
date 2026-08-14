@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Engineering", description: "JIDOKA f
 export default function Page() {
   return (
     <>
-      <PageHeader eyebrow="JIDOKA for Engineers" title="Engineering tools & technical support" lead="Everything an engineer or procurement team needs to find, specify, compare, replace or customise a component — without a shopping cart in sight." crumbs={[{ label: "Home", href: "/" }, { label: "Engineering" }]} />
+      <PageHeader motif="caliper" eyebrow="JIDOKA for Engineers" title="Engineering tools & technical support" lead="Everything an engineer or procurement team needs to find, specify, compare, replace or customise a component — without a shopping cart in sight." crumbs={[{ label: "Home", href: "/" }, { label: "Engineering" }]} />
       <div className="container-page py-14">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {engineeringMenu.map((it) => (
