@@ -49,7 +49,7 @@ export function Footer() {
         <div className="container-page flex flex-col items-start justify-between gap-6 py-12 md:flex-row md:items-center">
           <div>
             <p className="eyebrow mb-2">Tell us what you need</p>
-            <h2 className="max-w-xl text-2xl font-semibold tracking-tight text-fg sm:text-3xl">
+            <h2 className="heading-shimmer max-w-xl text-2xl font-semibold tracking-tight text-fg sm:text-3xl">
               Send a part number, a drawing, or describe what you&apos;re building.
             </h2>
           </div>

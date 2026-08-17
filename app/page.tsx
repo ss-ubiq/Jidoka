@@ -105,7 +105,8 @@ export default function HomePage() {
               </div>
               <h1 className="mt-5 text-display-lg font-bold text-fg">
                 <span className="block animate-hero-rise" style={rise(1)}>
-                  Industrial Components.
+                  {/* Inner span: the block span's `animation` (hero-rise) would override the shimmer's. */}
+                  <span className="heading-shimmer">Industrial Components.</span>
                 </span>
                 <span className="block animate-hero-rise text-accent" style={rise(2)}>
                   Engineering Solutions.
@@ -301,7 +302,7 @@ export default function HomePage() {
         <div className="relative grid items-center gap-10 lg:grid-cols-[1.3fr_1fr]">
           <Reveal variant="left">
             <Eyebrow className="text-accent">JIDOKA Engineering Desk</Eyebrow>
-            <h2 className="mt-5 text-heading-lg font-semibold text-bg">
+            <h2 className="heading-shimmer mt-5 text-heading-lg font-semibold text-bg">
               Need help selecting a component?
             </h2>
             <p className="mt-4 max-w-xl text-lg leading-relaxed text-bg/70">

@@ -83,7 +83,9 @@ export function PageHeader({
               </div>
             )}
             <h1 className="max-w-3xl animate-hero-rise text-heading-lg font-bold text-fg" style={rise(1)}>
-              {title}
+              {/* Shimmer lives on an inner span — the h1's own `animation` (hero-rise)
+                  would otherwise override the shimmer's, or vice versa. */}
+              <span className="heading-shimmer">{title}</span>
             </h1>
             {lead && (
               <p className="mt-4 max-w-2xl animate-hero-rise text-lg leading-relaxed text-fg-subtle" style={rise(2)}>

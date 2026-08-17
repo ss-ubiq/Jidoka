@@ -50,7 +50,7 @@ export function SectionHeading({
       )}
     >
       {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
-      <h2 className="text-heading-lg font-semibold text-fg">{title}</h2>
+      <h2 className="heading-shimmer text-heading-lg font-semibold text-fg">{title}</h2>
       {lead ? (
         <p className={cn("max-w-2xl text-lg leading-relaxed text-fg-subtle", align === "center" && "mx-auto")}>
           {lead}

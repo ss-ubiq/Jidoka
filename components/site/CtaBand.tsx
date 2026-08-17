@@ -26,7 +26,7 @@ export function CtaBand({
       />
       <Reveal className="container-page relative flex flex-col items-start justify-between gap-6 py-14 md:flex-row md:items-center">
         <div>
-          <h2 className="max-w-xl text-2xl font-semibold tracking-tight text-fg">{title}</h2>
+          <h2 className="heading-shimmer max-w-xl text-2xl font-semibold tracking-tight text-fg">{title}</h2>
           {body && <p className="mt-2 max-w-lg text-fg-subtle">{body}</p>}
         </div>
         <div className="flex shrink-0 flex-wrap gap-3">

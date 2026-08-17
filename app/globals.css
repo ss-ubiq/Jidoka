@@ -420,6 +420,44 @@
   transform: scaleX(var(--scroll-progress, 0));
 }
 
+/* --- Heading shimmer ---
+   An accent light-band sweeps across major headings, then rests.
+   currentColor keeps each heading's own colour (incl. the dark band's
+   white text and theme accents), so the class is safe on any surface.
+   Under prefers-reduced-motion the global block collapses the sweep to
+   its resting frame — plain currentColor text. */
+.heading-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    currentColor 0%,
+    currentColor 42%,
+    hsl(var(--accent)) 50%,
+    currentColor 58%,
+    currentColor 100%
+  );
+  /* With no-repeat + 250% size, coverage of the element only holds for
+     background-position 0%–100% — outside that range the gradient slides
+     off and the clipped text turns invisible. The sweep therefore runs
+     100% → 0% (highlight travels left → right, parked just off the right
+     edge at rest, where the 42%/58% currentColor stops hide it). */
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  background-position: 0% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: heading-shimmer 7s ease-in-out 1.2s infinite;
+}
+@keyframes heading-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  30%,
+  100% {
+    background-position: 0% 0;
+  }
+}
+
 /* Reserve space for the mobile action bar (fixed, lg:hidden) + iOS safe area. */
 @media (max-width: 1023.98px) {
   body {
