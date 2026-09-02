@@ -5,6 +5,10 @@ import { CheckCircle2, Loader2, Upload, AlertCircle } from "lucide-react";
 import { requirementTypes } from "@/lib/site";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { tools } from "@/data/tools";
+
+export type EnquiryPrefill = { quantity?: string; notes?: string; via?: string };
 
 export type EnquiryMode = "quote" | "requirement" | "alternative" | "bom" | "custom" | "engineer";
 
@@ -24,12 +28,15 @@ export function EnquiryForm({
   mode,
   className,
   reference,
+  prefill,
 }: {
   mode: EnquiryMode;
   className?: string;
   reference?: string;
+  prefill?: EnquiryPrefill;
 }) {
   const cfg = modeConfig[mode];
+  const viaTool = prefill?.via ? tools.find((t) => t.slug === prefill.via) : undefined;
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const [fileNames, setFileNames] = useState<string[]>([]);
@@ -91,11 +98,23 @@ export function EnquiryForm({
 
   return (
     <form onSubmit={onSubmit} className={cn("space-y-6", className)}>
-      {reference && (
-        <div className="flex items-center gap-2 rounded-md border border-accent/20 bg-accent-soft/50 px-3.5 py-2.5 text-sm">
-          <span className="font-mono text-xs uppercase tracking-wider text-muted">Regarding</span>
-          <span className="font-medium text-fg">{reference}</span>
-          <input type="hidden" name="reference" value={reference} />
+      {(reference || viaTool) && (
+        <div className="rounded-md border border-accent/20 bg-accent-soft/50 px-3.5 py-2.5 text-sm">
+          {reference && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs uppercase tracking-wider text-muted">Regarding</span>
+              <span className="font-medium text-fg">{reference}</span>
+              <input type="hidden" name="reference" value={reference} />
+            </div>
+          )}
+          {viaTool && (
+            <div className={cn("flex flex-wrap items-center gap-x-2 text-xs text-fg-subtle", reference && "mt-1.5")}>
+              <span>Built in the {viaTool.name} — the full specification is in the notes below.</span>
+              <Link href={`/tools/${viaTool.slug}`} className="font-medium text-accent hover:underline">
+                Edit in configurator
+              </Link>
+            </div>
+          )}
         </div>
       )}
       {/* Contact block */}
@@ -118,7 +137,7 @@ export function EnquiryForm({
       {cfg.showParts && (
         <FieldGrid>
           <Field label="Product / Part number"><input name="partNumber" defaultValue={reference} placeholder="e.g. MYKP32-120, or a supplier reference" className={inputCls} /></Field>
-          <Field label="Quantity"><input name="quantity" placeholder="e.g. 100 pcs / month" className={inputCls} /></Field>
+          <Field label="Quantity"><input name="quantity" defaultValue={prefill?.quantity} placeholder="e.g. 100 pcs / month" className={inputCls} /></Field>
         </FieldGrid>
       )}
 
@@ -132,7 +151,8 @@ export function EnquiryForm({
       <Field label="Technical requirement / notes" required={mode === "requirement" || mode === "custom"}>
         <textarea
           name="notes"
-          rows={5}
+          rows={prefill?.notes ? 8 : 5}
+          defaultValue={prefill?.notes}
           required={mode === "requirement" || mode === "custom"}
           placeholder={
             mode === "custom"

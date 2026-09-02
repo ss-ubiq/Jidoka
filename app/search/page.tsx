@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Boxes, Layers, Package, Upload } from "lucide-react";
+import { ArrowRight, Boxes, Layers, Package, Upload, SlidersHorizontal } from "lucide-react";
+import { matchTool } from "@/data/tools";
 import { SearchBox } from "@/components/search/SearchBox";
 import { TrackOnMount } from "@/components/analytics/TrackOnMount";
 import { searchCatalogue, type SearchHit } from "@/lib/catalog";
@@ -14,6 +15,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const { q = "" } = await searchParams;
   const query = q.trim();
   const hits = query ? searchCatalogue(query) : [];
+  const toolMatch = query ? matchTool(query) : null;
 
   const familyHits = hits.filter((h) => h.kind === "family");
   const subfamilyHits = hits.filter((h) => h.kind === "subfamily");
@@ -33,6 +35,35 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
       {query && (
         <div className="mx-auto mt-12 max-w-3xl space-y-10">
+          {toolMatch && (
+            <Link
+              href={toolMatch.href}
+              className="group flex flex-col justify-between gap-4 rounded-xl border border-accent/30 bg-accent-soft/50 p-6 shadow-card transition-all hover:border-accent/50 hover:shadow-card-hover sm:flex-row sm:items-center"
+            >
+              <div className="flex items-start gap-4">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-accent text-accent-fg">
+                  <SlidersHorizontal className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="text-lg font-semibold text-fg group-hover:text-accent">
+                    {toolMatch.full
+                      ? `Open ${toolMatch.code} in the ${toolMatch.tool.name}`
+                      : toolMatch.code
+                        ? `Build ${toolMatch.code} in the ${toolMatch.tool.name}`
+                        : `Build a part number in the ${toolMatch.tool.name}`}
+                  </h2>
+                  <p className="mt-1 text-sm text-fg-subtle">
+                    {toolMatch.full
+                      ? "Opens with this exact configuration restored — check it, adjust it, or send it straight for quotation."
+                      : `${toolMatch.code ? "Opens with this shaft type preselected — " : ""}set diameter, length and ends, then send it for quotation.`}
+                  </p>
+                </div>
+              </div>
+              <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-accent">
+                Open configurator <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </Link>
+          )}
           <p className="text-sm text-muted">
             {hits.length > 0
               ? `${hits.length} result${hits.length > 1 ? "s" : ""} for “${query}”`

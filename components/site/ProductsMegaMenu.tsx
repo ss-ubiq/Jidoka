@@ -47,6 +47,9 @@ export function ProductsMegaMenu({ onNavigate }: { onNavigate?: () => void }) {
         <Link href="/components" onClick={onNavigate} className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-fg hover:bg-surface">
           Component guides <ArrowRight className="h-3.5 w-3.5 text-muted" />
         </Link>
+        <Link href="/tools/shaft-configurator" onClick={onNavigate} className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-fg hover:bg-surface">
+          Shaft Configurator <ArrowRight className="h-3.5 w-3.5 text-muted" />
+        </Link>
         <div className="mt-2 rounded-md border border-accent/20 bg-accent-soft p-3">
           <p className="text-xs font-medium text-fg">Not sure what you need?</p>
           <p className="mt-1 text-xs text-fg-subtle">Send a drawing, part number or requirement.</p>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, FileText, HelpCircle, Link2, Factory, Package, ClipboardList } from "lucide-react";
+import { ArrowRight, FileText, HelpCircle, Link2, Factory, Package, ClipboardList, SlidersHorizontal } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { motifFor } from "@/components/site/HeaderVisual";
 import { CtaBand, PlaceholderNotice } from "@/components/site/CtaBand";
@@ -11,6 +11,7 @@ import { TrackOnMount } from "@/components/analytics/TrackOnMount";
 import { productLd, breadcrumbLd } from "@/lib/jsonld";
 import { allProductPaths, resolveProduct, relatedProducts, relatedFamilies } from "@/lib/catalog";
 import { catalogueHref } from "@/lib/utils";
+import { toolsByProduct } from "@/data/tools";
 
 export function generateStaticParams() {
   return allProductPaths();
@@ -44,6 +45,7 @@ export default async function ProductPage({
   const relFamilies = relatedFamilies(family);
 
   const refLabel = `${p.name} (${p.code})`;
+  const productTools = toolsByProduct[p.code] ?? [];
 
   const crumbs = [
     { label: "Home", href: "/" },
@@ -64,6 +66,15 @@ export default async function ProductPage({
         motif={motifFor(`${p.name} ${family.slug}`)}
       >
         <div className="flex flex-wrap items-center gap-3">
+          {productTools.map((t) => (
+            <Link
+              key={t.slug}
+              href={`/tools/${t.slug}`}
+              className="inline-flex h-10 items-center gap-2 rounded-md border border-accent bg-accent-soft/60 px-5 text-sm font-medium text-accent transition-colors hover:bg-accent-soft"
+            >
+              <SlidersHorizontal className="h-4 w-4" /> Configure part number
+            </Link>
+          ))}
           <Link
             href={`/request-a-quote?ref=${encodeURIComponent(refLabel)}`}
             className="inline-flex h-10 items-center gap-2 rounded-md bg-accent px-5 text-sm font-medium text-accent-fg transition-all hover:brightness-110"
@@ -95,6 +106,26 @@ export default async function ProductPage({
               ))}
             </dl>
           </section>
+
+          {/* Interactive configurator (where one exists for this product) */}
+          {productTools.map((t) => (
+            <section key={t.slug}>
+              <h2 className="text-xl font-semibold text-fg">Build a part number</h2>
+              <Link
+                href={`/tools/${t.slug}`}
+                className="group mt-5 flex flex-col justify-between gap-4 rounded-xl border border-accent/30 bg-accent-soft/40 p-6 shadow-card transition-all hover:border-accent/50 hover:shadow-card-hover sm:flex-row sm:items-center"
+              >
+                <div className="min-w-0">
+                  <p className="text-base font-semibold text-fg group-hover:text-accent">{t.name}</p>
+                  <p className="mt-1 text-sm text-fg-subtle">{t.short}</p>
+                  <p className="mt-2 text-xs text-muted">Rules transcribed from the {t.source}.</p>
+                </div>
+                <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-accent">
+                  Open configurator <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            </section>
+          ))}
 
           {/* Technical documents — REAL catalogue (§26, §36) */}
           <section>

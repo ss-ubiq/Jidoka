@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/site/PageHeader";
 import { CtaBand, PlaceholderNotice } from "@/components/site/CtaBand";
-import { FileText, Ruler, Layers, BookOpen, ArrowRight } from "lucide-react";
+import { FileText, Ruler, Layers, BookOpen, ArrowRight, SlidersHorizontal } from "lucide-react";
 import { catalogueProducts } from "@/lib/catalog";
+import { tools } from "@/data/tools";
 
 export const metadata: Metadata = {
   title: "Technical Library",
@@ -43,6 +44,30 @@ export default function Page() {
             Open library <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </span>
         </Link>
+
+        {/* Interactive tools */}
+        <section className="mt-10">
+          <h2 className="text-xl font-semibold text-fg">Interactive tools</h2>
+          <p className="mt-1 text-sm text-muted">Build a catalogue-valid part number step by step, then send it for quotation.</p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            {tools.map((t) => (
+              <Link
+                key={t.slug}
+                href={`/tools/${t.slug}`}
+                className="group flex items-start gap-4 rounded-xl border border-border bg-surface p-6 shadow-card transition-all hover:border-accent/40 hover:shadow-card-hover"
+              >
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-surface-2 text-accent">
+                  <SlidersHorizontal className="h-5 w-5" />
+                </span>
+                <div className="min-w-0">
+                  <h3 className="text-base font-semibold text-fg group-hover:text-accent">{t.name}</h3>
+                  <p className="mt-1.5 text-sm text-fg-subtle">{t.short}</p>
+                  <p className="mt-2 text-xs text-muted">Source: {t.source}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
           {[

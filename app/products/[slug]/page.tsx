@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, FileText, HelpCircle, Layers, Link2, Factory } from "lucide-react";
+import { ArrowRight, FileText, HelpCircle, Layers, Link2, Factory, SlidersHorizontal } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { motifFor } from "@/components/site/HeaderVisual";
 import { CtaBand, PlaceholderNotice } from "@/components/site/CtaBand";
@@ -12,6 +12,7 @@ import { familyItemListLd, breadcrumbLd } from "@/lib/jsonld";
 import { Badge } from "@/components/ui/Primitives";
 import { families, familyBySlug, productsOf, relatedFamilies } from "@/lib/catalog";
 import { keywordsByFamily } from "@/data/keywords";
+import { toolsByFamily, toolsBySubfamily } from "@/data/tools";
 import { slugify } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -36,6 +37,7 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
   const products = productsOf(family.id);
   const related = relatedFamilies(family);
   const guides = keywordsByFamily[family.id] ?? [];
+  const familyTools = toolsByFamily[family.id] ?? [];
   const crumbs = [{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: family.name }];
 
   return (
@@ -58,6 +60,11 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
           <Link href="/request-a-quote" className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline">
             Request a quote for this family <ArrowRight className="h-4 w-4" />
           </Link>
+          {familyTools.map((t) => (
+            <Link key={t.slug} href={`/tools/${t.slug}`} className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline">
+              <SlidersHorizontal className="h-4 w-4" /> {t.name}
+            </Link>
+          ))}
         </div>
       </PageHeader>
 
@@ -82,12 +89,23 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
                       <p className="truncate text-xs text-muted">Available on enquiry</p>
                     )}
                   </div>
-                  <Link
-                    href={`/request-a-quote?ref=${encodeURIComponent(family.name + " · " + sub.name)}`}
-                    className="ml-3 shrink-0 rounded-md border border-border-strong bg-surface px-2.5 py-1.5 text-xs font-medium text-fg transition-colors hover:border-accent/40 hover:text-accent"
-                  >
-                    Quote
-                  </Link>
+                  <div className="ml-3 flex shrink-0 items-center gap-1.5">
+                    {(toolsBySubfamily[sub.name] ?? []).map((t) => (
+                      <Link
+                        key={t.slug}
+                        href={`/tools/${t.slug}`}
+                        className="rounded-md border border-accent bg-accent-soft/60 px-2.5 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent-soft"
+                      >
+                        Configure
+                      </Link>
+                    ))}
+                    <Link
+                      href={`/request-a-quote?ref=${encodeURIComponent(family.name + " · " + sub.name)}`}
+                      className="rounded-md border border-border-strong bg-surface px-2.5 py-1.5 text-xs font-medium text-fg transition-colors hover:border-accent/40 hover:text-accent"
+                    >
+                      Quote
+                    </Link>
+                  </div>
                 </div>
               ))}
             </div>
@@ -116,6 +134,29 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
                       {p.catalogueFile && <Badge tone="neutral">PDF</Badge>}
                       <ArrowRight className="h-4 w-4 text-muted transition-transform group-hover:translate-x-0.5" />
                     </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Interactive tools for this family */}
+          {familyTools.length > 0 && (
+            <section>
+              <h2 className="text-xl font-semibold text-fg">Interactive tools</h2>
+              <p className="mt-1 text-sm text-muted">Build a catalogue-valid part number, then send it for quotation.</p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {familyTools.map((t) => (
+                  <Link
+                    key={t.slug}
+                    href={`/tools/${t.slug}`}
+                    className="group flex items-center justify-between rounded-lg border border-accent/30 bg-accent-soft/40 p-4 shadow-card transition-all hover:border-accent/50 hover:shadow-card-hover"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-fg group-hover:text-accent">{t.name}</p>
+                      <p className="mt-0.5 truncate text-xs text-muted">Source: {t.source}</p>
+                    </div>
+                    <ArrowRight className="ml-3 h-4 w-4 shrink-0 text-accent transition-transform group-hover:translate-x-0.5" />
                   </Link>
                 ))}
               </div>

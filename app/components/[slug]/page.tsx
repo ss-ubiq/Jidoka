@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, CheckCircle2, HelpCircle, Layers, Link2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, HelpCircle, Layers, Link2, SlidersHorizontal } from "lucide-react";
+import { toolsByKeyword } from "@/data/tools";
 import { PageHeader } from "@/components/site/PageHeader";
 import { motifFor } from "@/components/site/HeaderVisual";
 import { CtaBand } from "@/components/site/CtaBand";
@@ -155,6 +156,14 @@ export default async function KeywordPage({ params }: { params: Promise<{ slug: 
               </Link>
             </div>
           </div>
+          {(toolsByKeyword[k.slug] ?? []).map((t) => (
+            <Link key={t.slug} href={`/tools/${t.slug}`} className="group block rounded-xl border border-accent/30 bg-accent-soft/40 p-5 shadow-card transition-colors hover:border-accent/50">
+              <span className="flex items-center gap-2 text-sm font-semibold text-fg group-hover:text-accent">
+                <SlidersHorizontal className="h-4 w-4 text-accent" /> Build a part number
+              </span>
+              <span className="mt-1 block text-sm text-fg-subtle">{t.name}: pick the type, set diameter, length and ends, send for quotation.</span>
+            </Link>
+          ))}
           {family && (
             <div className="rounded-xl border border-border bg-surface p-5 shadow-card">
               <h3 className="text-sm font-semibold text-fg">Product family</h3>

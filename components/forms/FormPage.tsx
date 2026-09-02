@@ -1,6 +1,6 @@
 import { PageHeader, type Crumb } from "@/components/site/PageHeader";
 import { type HeaderMotif } from "@/components/site/HeaderVisual";
-import { EnquiryForm, type EnquiryMode } from "./EnquiryForm";
+import { EnquiryForm, type EnquiryMode, type EnquiryPrefill } from "./EnquiryForm";
 import { ShieldCheck, Clock, FileCheck2 } from "lucide-react";
 
 const trust = [
@@ -17,6 +17,7 @@ export function FormPage({
   crumbs,
   note,
   reference,
+  prefill,
   motif = "sheet",
 }: {
   mode: EnquiryMode;
@@ -26,6 +27,7 @@ export function FormPage({
   crumbs: Crumb[];
   note?: React.ReactNode;
   reference?: string;
+  prefill?: EnquiryPrefill;
   motif?: HeaderMotif;
 }) {
   return (
@@ -38,7 +40,7 @@ export function FormPage({
               {note}
             </div>
           )}
-          <EnquiryForm mode={mode} reference={reference} />
+          <EnquiryForm mode={mode} reference={reference} prefill={prefill} />
         </div>
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-xl border border-border bg-surface p-6 shadow-card">
