@@ -19,6 +19,7 @@ import { HeroTicker } from "@/components/home/HeroTicker";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { Section, SectionHeading, Eyebrow, Badge } from "@/components/ui/Primitives";
+import { Carousel } from "@/components/ui/Carousel";
 import { LinkButton } from "@/components/ui/Button";
 import { familiesByDemand } from "@/data/families";
 
@@ -225,10 +226,14 @@ export default function HomePage() {
             </LinkButton>
           </div>
         </Reveal>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {familiesByDemand.map((f, i) => (
-            <Reveal key={f.id} delay={(i % 3) * 90} className="h-full">
-              <TiltCard max={5}>
+        <Reveal delay={120}>
+          <Carousel
+            ariaLabel="Product families"
+            className="mt-10"
+            slideClassName="basis-[85%] sm:basis-[calc(50%-0.5rem)] lg:basis-[calc(33.333%-0.667rem)]"
+          >
+            {familiesByDemand.map((f) => (
+              <TiltCard key={f.id} max={5}>
                 <Link
                   href={`/products/${f.slug}`}
                   className="group flex h-full flex-col rounded-xl border border-border bg-surface p-6 shadow-card transition-all duration-300 hover:border-accent/40 hover:shadow-card-hover"
@@ -251,9 +256,9 @@ export default function HomePage() {
                   </span>
                 </Link>
               </TiltCard>
-            </Reveal>
-          ))}
-        </div>
+            ))}
+          </Carousel>
+        </Reveal>
       </Section>
 
       {/* ===================== SOLUTIONS ===================== */}

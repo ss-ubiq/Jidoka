@@ -123,6 +123,13 @@
   .hairline {
     @apply h-px w-full bg-border;
   }
+  /* Scroll container without a visible scrollbar (carousel tracks) */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* ============================================================
