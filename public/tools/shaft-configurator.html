@@ -52,6 +52,11 @@ a{color:var(--accent)}
 .top h1{font-size:28px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 .top .src{font-size:12.5px;opacity:.9}
 .top .src b{font-weight:600}
+.top .topnav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.top .topnav a{color:var(--accent-ink);text-decoration:none;font-size:13px;font-weight:500;padding:6px 11px;border:1px solid rgba(255,255,255,.45);border-radius:4px;white-space:nowrap}
+.top .topnav a:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.8)}
+.top .topnav a.primary{background:var(--accent-ink);color:var(--accent);border-color:var(--accent-ink)}
+.top .topnav a.primary:hover{opacity:.92}
 
 /* layout */
 .wrap{display:grid;grid-template-columns:250px minmax(0,1fr) 360px;gap:18px;padding:18px 22px 40px;max-width:1480px;margin:0 auto}
@@ -178,6 +183,12 @@ textarea.export{width:100%;min-height:90px;font-family:"IBM Plex Mono",monospace
 <header class="top">
   <h1>Linear Shaft Configurator</h1>
   <div class="src">Rules taken from the <b id="srcName"></b>, pages 11 to 30. Example build for checking, not an official ordering tool.</div>
+  <nav class="topnav" aria-label="Site">
+    <a href="/">&larr; JIDOKA home</a>
+    <a href="/products/linear-motion-and-bearings/guide-shaft">Guide Shaft product</a>
+    <a href="/tools/shaft-configurator">Open in site view</a>
+    <a class="primary" href="/request-a-quote">Request a Quote</a>
+  </nav>
 </header>
 
 <main class="wrap">
