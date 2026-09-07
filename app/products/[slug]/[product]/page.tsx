@@ -11,7 +11,7 @@ import { TrackOnMount } from "@/components/analytics/TrackOnMount";
 import { productLd, breadcrumbLd } from "@/lib/jsonld";
 import { allProductPaths, resolveProduct, relatedProducts, relatedFamilies } from "@/lib/catalog";
 import { catalogueHref } from "@/lib/utils";
-import { toolsByProduct } from "@/data/tools";
+import { toolsByProduct, toolHrefForProduct } from "@/data/tools";
 
 export function generateStaticParams() {
   return allProductPaths();
@@ -112,7 +112,7 @@ export default async function ProductPage({
             <section key={t.slug}>
               <h2 className="text-xl font-semibold text-fg">Build a part number</h2>
               <Link
-                href={`/tools/${t.slug}`}
+                href={toolHrefForProduct(t, p.code)}
                 className="group mt-5 flex flex-col justify-between gap-4 rounded-xl border border-accent/30 bg-accent-soft/40 p-6 shadow-card transition-all hover:border-accent/50 hover:shadow-card-hover sm:flex-row sm:items-center"
               >
                 <div className="min-w-0">

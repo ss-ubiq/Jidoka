@@ -76,6 +76,28 @@ nothing to upload by hand:
 | Site route | `/tools/component-configurator` |
 | Menu | Engineering mega-menu and the footer, as "Component Configurator" |
 
+### Every product links back to its catalogue
+
+Each of the 50 catalogue sections is mapped to the JIDOKA catalogue product its pages were
+transcribed from, so nothing in the configurator is shown without a route back to the book
+it came from:
+
+- In the configurator, the **Catalogue** row of the specification panel and the caption above
+  the drawing both link to that product's page on the site (which carries the catalogue
+  download), alongside the printed page number.
+- On each product page, **Build a part number** opens the configurator already on that
+  product's catalogue section (`/tools/component-configurator?cat=<key>`).
+- The quotation list hands off to `/request-a-quote` with the codes prefilled.
+
+The mapping is `data/catalogueSections.ts` in the website repo — one line per section, with
+the family and code counts and a note wherever a source PDF's filename disagrees with what
+its pages actually contain (three of them do). `publish_web.py` reads that file and fails
+loudly if a section has no mapping, so a new catalogue cannot go live unlinked.
+
+Two catalogue products have no section because their pages were not transcribed: Conveyor &
+Gripping Units, and Universal Joints (which shares the Disc Couplings book). Cutters was
+likewise left out of this build.
+
 ### The images are stored beside the page, not inside it
 
 The generated page originally carried every drawing and photograph inside itself as base64,

@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { CtaBand, PlaceholderNotice } from "@/components/site/CtaBand";
 import { JsonLd } from "@/components/site/JsonLd";
 import { breadcrumbLd } from "@/lib/jsonld";
+import { sectionByKey, productHref } from "@/data/catalogueSections";
+import { catalogueProducts } from "@/data/products";
 
 /** Self-contained configurator page under /public/tools — generated from the supplier catalogues. */
 const FILE = "/tools/component-configurator.html";
@@ -15,7 +17,13 @@ export const metadata: Metadata = {
     "Interactive part number configurator covering the full supplier catalogue — pick a catalogue section, product family and every size and option the book lists to build a catalogue-valid item code, then send it for quotation.",
 };
 
-export default function Page() {
+export default async function Page({ searchParams }: { searchParams: Promise<{ cat?: string }> }) {
+  const { cat } = await searchParams;
+  // Only a known section key ever reaches the embedded page.
+  const section = cat ? sectionByKey[cat] : undefined;
+  const product = section ? catalogueProducts.find((p) => p.code === section.product) : undefined;
+  const src = `${FILE}?embed=1${section ? `&cat=${encodeURIComponent(section.key)}` : ""}`;
+
   const crumbs = [
     { label: "Home", href: "/" },
     { label: "Engineering", href: "/engineering" },
@@ -28,18 +36,31 @@ export default function Page() {
         motif="bearing"
         eyebrow="Engineering Tool · All Catalogues"
         title="Component Configurator"
-        lead="Pick a catalogue section, then a product family, and work through one step per selection the catalogue asks for. Only the combinations the book actually lists are offered, so an impossible code cannot be built."
+        lead={
+          section
+            ? `Opened on the ${section.title} section — ${section.families} product families, ${section.codes} orderable codes, transcribed from the ${product?.name ?? section.title} catalogue. Work through one step per selection the catalogue asks for; only the combinations the book lists are offered.`
+            : "Pick a catalogue section, then a product family, and work through one step per selection the catalogue asks for. Only the combinations the book actually lists are offered, so an impossible code cannot be built."
+        }
         crumbs={crumbs}
       >
         <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href="/products"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
-          >
-            Browse the product families <ArrowRight className="h-4 w-4" />
-          </Link>
+          {product && productHref[product.code] ? (
+            <Link
+              href={productHref[product.code]}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
+            >
+              {product.name} catalogue <ArrowRight className="h-4 w-4" />
+            </Link>
+          ) : (
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
+            >
+              Browse the product families <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
           <a
-            href={FILE}
+            href={src}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-fg-subtle hover:text-fg"
@@ -67,7 +88,7 @@ export default function Page() {
         </ol>
         <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-card">
           <iframe
-            src={FILE}
+            src={src}
             title="Component Configurator"
             className="block h-[calc(100vh-9rem)] min-h-[40rem] w-full"
             loading="lazy"
