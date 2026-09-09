@@ -399,7 +399,8 @@ function build(){
   fs.forEach((fl, i) => {
     const val = state.sel[fl.key];
     const spec = fieldSpec(v, i);
-    if (val === '' || val == null) { issues.push('Choose ' + fl.label); vals[fl.key] = '?'; ready = false; return; }
+    const blankOffered = spec && spec.kind === 'options' && (spec.options||[]).map(String).includes('');
+    if (val == null || (val === '' && !blankOffered)) { issues.push('Choose ' + fl.label); vals[fl.key] = '?'; ready = false; return; }
     if (!ready) { vals[fl.key] = val; return; }
     if (spec.kind === 'options') { if (!spec.options.map(String).includes(String(val))) issues.push(fl.label + ' ' + disp(val) + ' is not available with the earlier choices'); }
     else if (spec.kind === 'number') { const e = checkNumber(spec.c, val); if (e) issues.push(fl.label + ' ' + e); }
@@ -410,7 +411,10 @@ function build(){
     parts.push(v.fmt.replace(/\{([A-Za-z0-9_]+)\}/g, (m,k) => vals[k] == null ? k + '?' : String(vals[k])));
   } else {
     parts.push(v.code);
-    for (const fl of fs) parts.push(fl.prefix + (vals[fl.key] === '?' ? '?' : vals[fl.key]));
+    for (const fl of fs) {
+      if (vals[fl.key] === '') continue;   // catalogue prints nothing for this choice
+      parts.push(fl.prefix + (vals[fl.key] === '?' ? '?' : vals[fl.key]));
+    }
   }
   for (const o of (f.optional||[])) {
     const s = state.opt[o.code]; if (!s || !s.on) continue;
@@ -512,14 +516,15 @@ function renderSteps(){
   let blocked = false;
   fs.forEach((fl, i) => {
     n++;
-    const val = state.sel[fl.key] ?? '';
+    const raw = state.sel[fl.key];          // undefined until the customer actually picks
+    const val = raw ?? '';
     const spec = blocked ? { kind:'blocked' } : fieldSpec(v, i);
     const pn = f.paramNotes && f.paramNotes[fl.key];
     h += `<div class="step"><div class="step-h"><span class="n">${n}</span><h3>${esc(fl.label)}</h3>${val!==''?`<span class="val">${esc(fl.prefix)}${esc(val)}</span>`:''}</div><div class="step-b">`;
     if (spec.kind === 'blocked') h += `<div class="hint">Choose ${esc(fs[i-1].label)} first.</div>`;
     else if (spec.kind === 'none') h += `<div class="msg">No value is listed for this combination. Change an earlier choice.</div>`;
     else if (spec.kind === 'options') {
-      h += `<div class="chips ${spec.options.length > 24 ? 'many' : ''}">` + spec.options.map(o => `<button type="button" class="chip" data-f="${esc(fl.key)}" data-val="${esc(o)}" aria-pressed="${String(o)===String(val)}">${esc(disp(o))}</button>`).join('') + `</div>`;
+      h += `<div class="chips ${spec.options.length > 24 ? 'many' : ''}">` + spec.options.map(o => `<button type="button" class="chip" data-f="${esc(fl.key)}" data-val="${esc(o)}" aria-pressed="${raw != null && String(o)===String(val)}">${esc(disp(o))}</button>`).join('') + `</div>`;
       if (val !== '' && !spec.options.map(String).includes(String(val))) h += `<div class="msg">${esc(disp(val))} is not available with the earlier choices.</div>`;
     } else {
       const c = spec.c || {};
