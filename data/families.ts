@@ -135,8 +135,8 @@ export const families: Family[] = [
     demandRank: 1,
     subfamilies: [
       { name: "Coil Springs (Regular Load)", product: "Springs" },
-      { name: "Die Springs" },
-      { name: "Wire Springs" },
+      { name: "Die Springs", product: "Springs" },
+      { name: "Wire Springs", product: "Springs" },
       { name: "Gas Springs" },
       { name: "Shock Absorbers", product: "Shock Absorbers & Protectives" },
       { name: "Dampers", product: "Dampers" },

@@ -99,9 +99,14 @@ export const sectionByKey: Record<string, CatalogueSection> = Object.fromEntries
 );
 
 /** Product code -> the configurator section built from that catalogue. */
-export const sectionByProduct: Record<string, CatalogueSection> = Object.fromEntries(
-  catalogueSections.flatMap((s) => [s.product, ...(s.alsoProducts ?? [])].map((code) => [code, s])),
-);
+export const sectionByProduct: Record<string, CatalogueSection> = catalogueSections.reduce<
+  Record<string, CatalogueSection>
+>((acc, s) => {
+  // Two sections can share a product (Ball Screw Supports has a supplement); the first
+  // in title order is the main book, so it wins and the supplement does not overwrite it.
+  for (const code of [s.product, ...(s.alsoProducts ?? [])]) acc[code] ??= s;
+  return acc;
+}, {});
 
 /** Product code -> its page on this site, for linking out of the configurator. */
 export const productHref: Record<string, string> = Object.fromEntries(
@@ -110,6 +115,26 @@ export const productHref: Record<string, string> = Object.fromEntries(
     return family ? [[p.code, `/products/${family.slug}/${p.slug}`]] : [];
   }),
 );
+
+/**
+ * Product NAME -> its section. data/families.ts subfamily rows reference a catalogue by
+ * name, so this is what turns a subfamily row into a "Configure" action.
+ */
+export const sectionByProductName: Record<string, CatalogueSection> = Object.fromEntries(
+  catalogueProducts.flatMap((p) => {
+    const section = sectionByProduct[p.code];
+    return section ? [[p.name, section] as const] : [];
+  }),
+);
+
+/**
+ * "Configure" link for a subfamily row, given the catalogue product it belongs to.
+ * Null where that product has no transcribed section, so no dead chip is rendered.
+ */
+export function subfamilyConfigureHref(productName?: string): string | null {
+  const section = productName ? sectionByProductName[productName] : undefined;
+  return section ? `/tools/component-configurator?cat=${encodeURIComponent(section.key)}` : null;
+}
 
 /**
  * Link into the configurator, preselecting the catalogue section a product was read from.

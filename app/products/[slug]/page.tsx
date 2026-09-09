@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/Primitives";
 import { families, familyBySlug, productsOf, relatedFamilies } from "@/lib/catalog";
 import { keywordsByFamily } from "@/data/keywords";
 import { toolsByFamily, toolsBySubfamily } from "@/data/tools";
+import { subfamilyConfigureHref } from "@/data/catalogueSections";
 import { slugify } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -76,7 +77,12 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
               <Layers className="h-5 w-5 text-accent" /> Subfamilies
             </h2>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {family.subfamilies.map((sub) => (
+              {family.subfamilies.map((sub) => {
+                // A subfamily with its own dedicated tool keeps it; everything else that
+                // maps to a transcribed catalogue opens the Component Configurator there.
+                const specialised = toolsBySubfamily[sub.name] ?? [];
+                const configureHref = specialised.length ? null : subfamilyConfigureHref(sub.product);
+                return (
                 <div
                   key={sub.name}
                   className="flex items-center justify-between rounded-lg border border-border bg-surface p-4 shadow-card"
@@ -90,7 +96,7 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
                     )}
                   </div>
                   <div className="ml-3 flex shrink-0 items-center gap-1.5">
-                    {(toolsBySubfamily[sub.name] ?? []).map((t) => (
+                    {specialised.map((t) => (
                       <Link
                         key={t.slug}
                         href={`/tools/${t.slug}`}
@@ -99,6 +105,14 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
                         Configure
                       </Link>
                     ))}
+                    {configureHref ? (
+                      <Link
+                        href={configureHref}
+                        className="rounded-md border border-accent bg-accent-soft/60 px-2.5 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent-soft"
+                      >
+                        Configure
+                      </Link>
+                    ) : null}
                     <Link
                       href={`/request-a-quote?ref=${encodeURIComponent(family.name + " · " + sub.name)}`}
                       className="rounded-md border border-border-strong bg-surface px-2.5 py-1.5 text-xs font-medium text-fg transition-colors hover:border-accent/40 hover:text-accent"
@@ -107,7 +121,8 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
                     </Link>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </section>
 
