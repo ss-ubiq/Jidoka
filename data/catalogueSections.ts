@@ -23,6 +23,11 @@ export type CatalogueSection = {
   product: string;
   families: number;
   codes: number;
+  /**
+   * Other catalogue products whose pages sit in this same section, so they deep-link
+   * here too (e.g. Universal Joints are printed inside the Disc Couplings book).
+   */
+  alsoProducts?: string[];
   /** Set where the source PDF's filename disagrees with what its pages actually contain. */
   note?: string;
 };
@@ -36,7 +41,9 @@ export const catalogueSections: CatalogueSection[] = [
   { key: "CASTERS",                                 title: "Casters",                                   product: "JID-CASTERS",                     families:   34, codes:   64 },
   { key: "chain-sprocket",                          title: "Chains and Sprockets",                      product: "JID-CHAIN-SPROCKET",              families:   36, codes:  110 },
   { key: "JJ1-4",                                   title: "Dampers",                                   product: "JID-DAMPERS",                     families:   10, codes:   10 },
-  { key: "cj2-1",                                   title: "Disc Couplings",                            product: "JID-DISC-COUPLINGS",              families:   13, codes:   30 },
+  { key: "cj2-1",                                   title: "Disc Couplings",                            product: "JID-DISC-COUPLINGS",              families:   13, codes:   30,
+    alsoProducts: ["JID-UNIVERSAL-JOINTS"],
+    note: "Also holds the two Precision Type Universal Joint families (DDC01-DDC36) - the same printed book covers both products." },
   { key: "DOOR-LATCHES",                            title: "Door Latches",                              product: "JID-DOOR-LATCHES",                families:   35, codes:   74 },
   { key: "AA9-3",                                   title: "Drag Chains",                               product: "JID-DRAG-CHAIN-CABLE",            families:   14, codes:   21 },
   { key: "EE3-4",                                   title: "Ducts and Hoses",                           product: "JID-DUCT-HOSE",                   families:    2, codes:    6 },
@@ -91,7 +98,7 @@ export const sectionByKey: Record<string, CatalogueSection> = Object.fromEntries
 
 /** Product code -> the configurator section built from that catalogue. */
 export const sectionByProduct: Record<string, CatalogueSection> = Object.fromEntries(
-  catalogueSections.map((s) => [s.product, s]),
+  catalogueSections.flatMap((s) => [s.product, ...(s.alsoProducts ?? [])].map((code) => [code, s])),
 );
 
 /** Product code -> its page on this site, for linking out of the configurator. */

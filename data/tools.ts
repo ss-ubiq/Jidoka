@@ -29,7 +29,7 @@ export type EngineeringTool = {
 };
 
 /** Catalogues the Component Configurator covers, and the families those sit in. */
-const configuratorProducts = catalogueSections.map((s) => s.product);
+const configuratorProducts = catalogueSections.flatMap((s) => [s.product, ...(s.alsoProducts ?? [])]);
 const configuratorFamilies = [
   ...new Set(
     configuratorProducts.flatMap((code) => {
@@ -68,7 +68,9 @@ export const tools: EngineeringTool[] = [
     // better resolved by the specific tool that owns it (see matchTool).
     codePrefixes: [],
     terms: /\b(part|item|order)[ -]?(number|code)s?\b|catalogue code/i,
-    sections: Object.fromEntries(catalogueSections.map((s) => [s.product, s.key])),
+    sections: Object.fromEntries(
+      catalogueSections.flatMap((s) => [s.product, ...(s.alsoProducts ?? [])].map((code) => [code, s.key])),
+    ),
   },
 ];
 
