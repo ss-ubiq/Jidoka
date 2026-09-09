@@ -26,6 +26,7 @@ const columns: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Custom Component", href: "/engineering/custom-component" },
       { label: "Compare Components", href: "/engineering/compare" },
       { label: "Shaft Configurator", href: "/tools/shaft-configurator" },
+      { label: "Component Configurator", href: "/tools/component-configurator" },
       { label: "Part Number Search", href: "/search" },
     ],
   },

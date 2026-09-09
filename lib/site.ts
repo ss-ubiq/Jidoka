@@ -84,6 +84,7 @@ export const engineeringMenu: NavChild[] = [
   { label: "Part Number Search", href: "/search", hint: "Search by code or keyword" },
   { label: "Compare Components", href: "/engineering/compare", hint: "Side-by-side technical view" },
   { label: "Shaft Configurator", href: "/tools/shaft-configurator", hint: "Build a linear shaft part number" },
+  { label: "Component Configurator", href: "/tools/component-configurator", hint: "Build any part number, all 50 catalogues" },
   { label: "Technical Library", href: "/resources", hint: "Catalogues, datasheets, guides" },
   { label: "CAD & Drawings", href: "/resources/cad", hint: "Where available per product" },
   { label: "Ask an Engineer", href: "/engineering-desk", hint: "Structured technical enquiry" },
