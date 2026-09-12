@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { track } from "@/lib/analytics";
+import { classifyQuery, track } from "@/lib/analytics";
 
 export function SearchBox({ initial = "" }: { initial?: string }) {
   const router = useRouter();
@@ -13,7 +13,7 @@ export function SearchBox({ initial = "" }: { initial?: string }) {
       onSubmit={(e) => {
         e.preventDefault();
         const term = q.trim();
-        if (term) track("search_performed", { q: term });
+        if (term) track("search_performed", { kind: classifyQuery(term), length: term.length });
         router.push(term ? `/search?q=${encodeURIComponent(term)}` : "/search");
       }}
       className="relative"

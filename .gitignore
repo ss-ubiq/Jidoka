@@ -21,3 +21,10 @@ docs/jidoka-website-audit.md
 docs/jidoka-product-taxonomy.md
 docs/jidoka-seo-strategy.md
 docs/jidoka-implementation-plan.md
+
+# Local enquiry sink (ENQUIRY_DEV_SINK=1) - contains real submitted enquiries and files
+/.enquiries/
+
+# Launch readiness report: enumerates residual weaknesses and outstanding owner actions.
+# This repository is PUBLIC, so it stays local alongside the other internal docs.
+docs/jidoka-launch-readiness-report.md

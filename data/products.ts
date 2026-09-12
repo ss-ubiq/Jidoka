@@ -1,5 +1,5 @@
 /**
- * The 50 verified JIDOKA catalogue products (source: dev.db `Product` + `ProductDocument`).
+ * The 52 verified JIDOKA catalogue products (source: dev.db `Product` + `ProductDocument`).
  * Owned by the website so it stays self-contained (§79). Each product links to its public
  * `family` (data/families.ts) and to its real catalogue PDF in /public/catalogues (§26, §36).
  * Structured specs are intentionally omitted — the real technical data lives in the catalogue

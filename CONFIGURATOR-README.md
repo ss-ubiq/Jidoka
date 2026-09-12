@@ -87,7 +87,12 @@ it came from:
   download), alongside the printed page number.
 - On each product page, **Build a part number** opens the configurator already on that
   product's catalogue section (`/tools/component-configurator?cat=<key>`).
-- The quotation list hands off to `/request-a-quote` with the codes prefilled.
+- The quotation list hands off to `/request-a-quote` as **line items**: the tool writes them
+  to the shared quote session (`sessionStorage`, key `jidoka.quote.v1`) and passes only
+  `?quote=<id>&via=<tool>`, so each part code keeps its own row, quantity and specification
+  on the form, in the submitted payload and in the email. Both configurators share one
+  list, so parts from different catalogues go into a single request. See
+  `docs/jidoka-rfq-flow.md` → "The active quotation list".
 
 The mapping is `data/catalogueSections.ts` in the website repo — one line per section, with
 the family and code counts and a note wherever a source PDF's filename disagrees with what

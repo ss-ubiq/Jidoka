@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { track } from "@/lib/analytics";
+import { classifyQuery, track } from "@/lib/analytics";
 
 const examples = ["ejector pin", "gas spring", "linear bearing", "guide post", "aluminium profile"];
 
@@ -14,7 +14,7 @@ export function HeroSearch() {
   function submit(e: React.FormEvent) {
     e.preventDefault();
     const term = q.trim();
-    if (term) track("search_performed", { q: term });
+    if (term) track("search_performed", { kind: classifyQuery(term), length: term.length });
     router.push(term ? `/search?q=${encodeURIComponent(term)}` : "/search");
   }
 

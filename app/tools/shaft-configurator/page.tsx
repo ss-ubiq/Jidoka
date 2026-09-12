@@ -41,10 +41,20 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ c
           >
             Guide Shaft catalogue product <ArrowRight className="h-4 w-4" />
           </Link>
+          {/*
+            `rel="opener"` is deliberate and must stay. Chrome applies noopener to every
+            target="_blank" by default, which puts the new tab in its own browsing context
+            group — and a tab in a new group does not inherit this one's sessionStorage,
+            so the visitor's quotation list would vanish on the way to full-screen.
+            Opting back in is safe here: this is a same-origin link to our own tool file,
+            which is exactly the case noopener is not protecting against. (Verified: with
+            the default, and with rel="" , the new tab starts empty; only rel="opener"
+            carries the list.)
+          */}
           <a
             href={tool.file}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="opener"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-fg-subtle hover:text-fg"
           >
             Open full-screen <ExternalLink className="h-4 w-4" />

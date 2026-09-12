@@ -1,0 +1,44 @@
+# Netlify build settings for jidoka.in (deploys from `main`).
+#
+# Kept deliberately minimal: this file OVERRIDES the Netlify dashboard, so it
+# declares only what we can state with certainty. The publish directory is left
+# out on purpose — the Next.js runtime resolves it, and hard-coding it is the
+# usual way a working Next deploy gets broken.
+#
+# This is a server deployment, not a static export: app/api/enquiry and
+# app/api/track both run on the Node runtime.
+
+[build]
+  command = "pnpm build"
+
+[build.environment]
+  # Pinned so a Netlify default bump can never change the build out from under us.
+  # Keep in step with .nvmrc and package.json "engines".
+  NODE_VERSION = "22"
+
+# The 52 catalogue PDFs (~2.0 GB) are NOT in this repo. Production sets
+# NEXT_PUBLIC_CATALOGUE_BASE in the dashboard to the GitHub release download base
+# so lib/utils.ts catalogueHref() rewrites /catalogues/*.pdf onto it.
+# Secrets (SMTP_*, RFQ_*) stay in the dashboard and never in this file.
+
+# Security headers. Deliberately conservative about framing: the configurator tools are
+# same-origin iframes (/tools/<slug> frames /tools/<slug>.html), so SAMEORIGIN is required —
+# DENY would blank both tools. Verified in a browser after every change to this block.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # No camera, mic, geolocation or payment anywhere on this site.
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    # HSTS: only after the apex and www are both confirmed serving HTTPS. Already true on
+    # jidoka.in via Netlify-managed certificates.
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+# The published configurator pages are noindex already; make that unambiguous to crawlers
+# that fetch the raw .html directly rather than the framed route.
+[[headers]]
+  for = "/tools/*.html"
+  [headers.values]
+    X-Robots-Tag = "noindex"

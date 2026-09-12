@@ -270,7 +270,7 @@ const SITE = {
 // standalone single-file build, where there is no site to hand off to.
 const SITE_QUOTE = "/request-a-quote";
 
-const state = { cat:null, fam:null, variant:null, sel:{}, opt:{}, sep:'-', list:[], showExport:false, q:'' };
+const state = { cat:null, fam:null, variant:null, sel:{}, opt:{}, sep:'-', list:[], showExport:false, q:'', confirmClear:false };
 
 // ---------- data prep ----------
 const FAMS = [];
@@ -608,16 +608,16 @@ function renderList(){
   if (!state.list.length) h += `<div class="empty">Configured part numbers you add appear here. Send them as a quotation request by email or WhatsApp, or copy as CSV.</div>`;
   else {
     h += `<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Part number</th><th>Qty</th><th></th></tr></thead><tbody>`;
-    state.list.forEach((it, i) => { h += `<tr><td class="mono">${i+1}</td><td class="c">${esc(it.code)}<small>${esc(it.family)}${it.cat?' · '+esc(it.cat):''}</small></td><td><input class="q" type="text" inputmode="decimal" autocomplete="off" id="q_${i}" data-q="${i}" value="${it.qty}"></td><td><button type="button" class="x" data-del="${i}" title="Remove">×</button></td></tr>`; });
+    state.list.forEach((it, i) => { h += `<tr><td class="mono">${i+1}</td><td class="c">${esc(it.code)}<small>${esc(it.family)}${it.catalogue?' · '+esc(it.catalogue):''}</small></td><td><input class="q" type="number" min="1" step="1" inputmode="numeric" autocomplete="off" id="q_${i}" data-q="${i}" value="${it.qty}" aria-label="Quantity for ${esc(it.code)}"></td><td><button type="button" class="x" data-del="${i}" title="Remove">×</button></td></tr>`; });
     h += `</tbody></table></div>`;
-    h += `<div class="foot">${SITE_QUOTE?`<button type="button" class="btn primary" id="btnQuote">Request a quote for this list</button>`:``}${SITE.email?`<button type="button" class="btn" id="btnMail">Email request</button>`:``}${SITE.whatsapp?`<button type="button" class="btn" id="btnWa">WhatsApp</button>`:``}<button type="button" class="btn" id="btnCsv">Copy as CSV</button><button type="button" class="btn" id="btnShow">${state.showExport?'Hide text':'Show as text'}</button><button type="button" class="btn" id="btnClear">Clear list</button></div>`;
+    h += `<div class="foot">${SITE_QUOTE?`<button type="button" class="btn primary" id="btnQuote">Request a quote for this list</button>`:``}${SITE.email?`<button type="button" class="btn" id="btnMail">Email request</button>`:``}${SITE.whatsapp?`<button type="button" class="btn" id="btnWa">WhatsApp</button>`:``}<button type="button" class="btn" id="btnCsv">Copy as CSV</button><button type="button" class="btn" id="btnShow">${state.showExport?'Hide text':'Show as text'}</button><button type="button" class="btn" id="btnClear">${state.confirmClear?'Confirm - remove all':'Start new quote'}</button></div>`;
     if (state.showExport) h += `<textarea class="export" readonly>${esc(csv())}</textarea>`;
   }
   L.innerHTML = h;
 }
 function csv(){
   const lines = ['Part number,Qty,Catalogue,Family,Type,Material,Surface,Catalogue page'];
-  for (const it of state.list) lines.push([it.code, it.qty, it.cat, it.family, it.type, it.material, it.surface, it.page].map(x => '"' + String(x??'').replace(/"/g,'""') + '"').join(','));
+  for (const it of state.list) lines.push([it.code, it.qty, it.catalogue, it.family, it.type, it.material, it.surface, it.page].map(x => '"' + String(x??'').replace(/"/g,'""') + '"').join(','));
   return lines.join('\n');
 }
 function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove('show'), 1600); }
@@ -627,7 +627,7 @@ async function copyText(txt, msg){ try { await navigator.clipboard.writeText(txt
 function requestSubject(){ return 'Quotation request' + (state.list.length ? ' (' + state.list.length + ' item' + (state.list.length===1?'':'s') + ')' : ''); }
 function requestText(){
   const lines = [];
-  state.list.forEach((it, i) => lines.push((i+1) + '. ' + it.code + '   x ' + it.qty + '   (' + [it.family, it.type, it.material].filter(Boolean).join(', ') + ', ' + (it.cat||'') + ' p.' + it.page + ')'));
+  state.list.forEach((it, i) => lines.push((i+1) + '. ' + it.code + '   x ' + it.qty + '   (' + [it.family, it.type, it.material].filter(Boolean).join(', ') + ', ' + (it.catalogue||'') + ' p.' + it.page + ')'));
   lines.push('', 'Name:', 'Company:', 'Phone:', 'Delivery address:', '', 'Generated with the Component Configurator' + (SITE.website ? ' - ' + SITE.website : ''));
   return lines.join('\n');
 }
@@ -737,23 +737,19 @@ function renderSite(){
 function itemOf(){
   const b = build(); const v = variant(); const f = fam();
   if (!v || !f) return null;
-  return { code:b.code, qty:1, cat:f.catTitle, family:f.title, type:v.type, material:v.material,
-           surface:v.surface, page:f.catalogPage, issues:b.issues };
+  return { id:b.code, code:b.code, qty:1, catalogue:f.catTitle, family:f.title, type:v.type, material:v.material,
+           surface:v.surface, page:String(f.catalogPage), via:'component-configurator', issues:b.issues };
 }
 function siteOf(){ const c = catOf(state.cat); return c && c.site; }
-function handoff(path, items){
+function handoff(path, items, extra){
   if (!SITE_QUOTE) return;
-  const nl = String.fromCharCode(10);
-  const site = siteOf();
-  const ref = items.map(it => it.code + (Number(it.qty) > 1 ? " x" + it.qty : "")).join(", ");
-  const qty = items.length === 1 ? String(items[0].qty) : items.map(it => it.code + ": " + it.qty).join(", ");
-  const notes = "Configured in the JIDOKA Component Configurator"
-    + (site ? " (" + site.name + " catalogue)" : "") + ":" + nl
-    + items.map(it => "- " + it.code + " - qty " + it.qty + " - "
-        + [it.family, it.type, it.material, it.surface].filter(Boolean).join("; ")
-        + "; " + it.cat + " catalogue p." + it.page).join(nl)
-    + nl + nl + "Please confirm against the current catalogue and quote.";
-  const u = new URLSearchParams({ ref, qty, notes, via: "component-configurator" });
+  // The list travels in the shared quote session, one entry per part number, so the
+  // enquiry form shows real rows instead of one comma-joined string of codes.
+  const list = items.filter(it => it && it.code).map(it => { const c = Object.assign({}, it); delete c.issues; return c; });
+  if (!list.length) return;
+  const q = writeQuote(list);
+  const u = new URLSearchParams(Object.assign({ quote: q.quoteId, via: "component-configurator" }, extra || {}));
+  if (list.length === 1) u.set("ref", list[0].code);   // names a single code in the page header
   const url = path + "?" + u.toString();
   if (window.top !== window.self) { window.top.location.href = url; } else { location.href = url; }
 }
@@ -780,16 +776,17 @@ document.addEventListener('click', e => {
   if (t.dataset.sep != null) { state.sep = t.dataset.sep; render(); return; }
   if (t.dataset.del != null) { state.list.splice(Number(t.dataset.del), 1); render(); return; }
   if (t.id === 'btnCopy') { copyText(build().code); return; }
-  if (t.id === 'btnAdd') { const b = build(); if (b.issues.length) return; const v = variant(); const f = fam();
-    state.list.push({ code:b.code, qty:1, cat:f.catTitle, family:f.title, type:v.type, material:v.material, surface:v.surface, page:f.catalogPage }); render(); toast('Added to list'); return; }
+  if (t.id === 'btnAdd') { const it = itemOf(); if (!it || it.issues.length) return; addItem(it); return; }
   if (t.id === 'btnCsv') { copyText(csv()); return; }
   if (t.id === 'btnShow') { state.showExport = !state.showExport; render(); return; }
-  if (t.id === 'btnClear') { state.list = []; render(); return; }
+  if (t.id === 'btnClear') {
+    if (!state.confirmClear) { state.confirmClear = true; render(); toast('Click again to remove all items'); return; }
+    state.list = []; state.confirmClear = false; clearQuote(); render(); toast('New quote started'); return; }
   if (t.id === 'btnLink') { const b = build(); if (b.issues.length) return; copyText(shareUrl(b.code), 'Link copied'); return; }
   if (t.id === 'btnDecode') { runDecode($('#inDecode').value); return; }
   // Hand the list to the site's quotation form (escapes the iframe when embedded).
   if (t.id === 'btnQuote') { if (state.list.length) handoff('/request-a-quote', state.list); return; }
-  if (t.id === 'btnQuoteOne') { const it = itemOf(); if (!it || it.issues.length) return; handoff('/request-a-quote', [it]); return; }
+  if (t.id === 'btnQuoteOne') { const it = itemOf(); if (!it || it.issues.length) return; addItem(it); handoff('/request-a-quote', state.list); return; }
   if (t.id === 'btnAsk') { const it = itemOf(); handoff('/engineering-desk', it ? [it] : []); return; }
   if (t.id === 'btnMail') { location.href = 'mailto:' + encodeURIComponent(SITE.email||'') + '?subject=' + encodeURIComponent(requestSubject()) + '&body=' + encodeURIComponent(requestText()); return; }
   if (t.id === 'btnWa') { window.open('https://wa.me/' + (SITE.whatsapp||'').replace(/\D/g,'') + '?text=' + encodeURIComponent(requestSubject() + '\n\n' + requestText()), '_blank', 'noopener'); return; }
@@ -811,7 +808,7 @@ document.addEventListener('input', e => {
   if (t.id === 'inSearch') { state.q = t.value; renderFamilies(); return; }
   if (t.dataset.fin) { setField(t.dataset.fin, t.value); return; }
   if (t.dataset.oi) { const s = state.opt[t.dataset.oi] || (state.opt[t.dataset.oi] = {on:true, in:{}}); s.in = s.in || {}; s.in[t.dataset.key] = t.value; render(); return; }
-  if (t.dataset.q != null) { state.list[Number(t.dataset.q)].qty = Math.max(1, parseInt(t.value)||1); save(); return; }
+  if (t.dataset.q != null) { state.list[Number(t.dataset.q)].qty = qtyOf(t.value); saveQuote(); return; }
 });
 document.addEventListener('change', e => {
   const t = e.target;
@@ -851,8 +848,64 @@ function selectVariant(code){
   fs.forEach((fl, i) => { const cur = state.sel[fl.key]; if (cur == null || cur === '') return; const spec = fieldSpec(v, i); if ((spec.kind === 'options' && !spec.options.map(String).includes(String(cur))) || spec.kind === 'none') delete state.sel[fl.key]; });
   render();
 }
-function save(){ try { localStorage.setItem('cfg2', JSON.stringify({cat:state.cat,fam:state.fam,variant:state.variant,sel:state.sel,opt:state.opt,sep:state.sep,list:state.list})); } catch(e){} }
-function load(){ try { const s = JSON.parse(localStorage.getItem('cfg2')||'null'); const f = s && FAMS.find(x=>x.uid===s.fam); if (f) { Object.assign(state, s); state.cat = f.cat; } } catch(e){} }
+
+// ---------- shared quotation session (mirrors lib/quote.ts) ----------
+// sessionStorage, not localStorage: the list survives a refresh and moving between
+// pages in this tab, a brand new window starts empty, and closing the browser drops
+// it without anyone having to detect the close. The timestamps below expire a list
+// that a session restore ("continue where you left off", Ctrl+Shift+T) brings back.
+const QUOTE_KEY = 'jidoka.quote.v1';
+const QUOTE_IDLE_MS = 8 * 60 * 60 * 1000;
+const QUOTE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+const QUOTE_MAX_ITEMS = 60, QUOTE_MAX_QTY = 1000000;
+function ss(){ try { return window.sessionStorage; } catch(e){ return null; } }
+function newQuoteId(){ const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let r = '';
+  for (let i = 0; i < 4; i++) r += A[Math.floor(Math.random() * A.length)];
+  return 'JQ-' + Date.now().toString(36).toUpperCase() + '-' + r; }
+// Whole positive units only, so a typo can never become a quantity. Parse the number
+// rather than stripping non-digits: stripping turns '-5' into 5 and '2.9' into 29.
+function qtyOf(v){ const n = typeof v === 'number' ? v : parseFloat(String(v == null ? '' : v).replace(/[ ,]/g, ''));
+  return (!isFinite(n) || n < 1) ? 1 : Math.min(Math.floor(n), QUOTE_MAX_QTY); }
+function readQuote(){ const s = ss(); if (!s) return null;
+  let p; try { p = JSON.parse(s.getItem(QUOTE_KEY) || 'null'); } catch(e){ return null; }
+  if (!p || p.v !== 1 || typeof p.quoteId !== 'string') return null;
+  const now = Date.now();
+  if (now - (p.updatedAt || 0) > QUOTE_IDLE_MS || now - (p.startedAt || 0) > QUOTE_MAX_AGE_MS) { clearQuote(); return null; }
+  p.items = Array.isArray(p.items) ? p.items.slice(0, QUOTE_MAX_ITEMS).filter(i => i && i.code)
+    .map(i => Object.assign({}, i, { id: i.id || i.code, qty: qtyOf(i.qty) })) : [];
+  return p; }
+function writeQuote(items){ const prev = readQuote(), now = Date.now();
+  const q = { v: 1, quoteId: (prev && prev.quoteId) || newQuoteId(),
+              startedAt: (prev && prev.startedAt) || now, updatedAt: now,
+              items: items.slice(0, QUOTE_MAX_ITEMS) };
+  try { const s = ss(); if (s) s.setItem(QUOTE_KEY, JSON.stringify(q)); } catch(e){}
+  return q; }
+function clearQuote(){ try { const s = ss(); if (s) s.removeItem(QUOTE_KEY); } catch(e){} }
+// An empty list is no quote at all, so it leaves nothing behind for the next visit.
+function saveQuote(){ if (state.list.length) writeQuote(state.list); else clearQuote(); }
+// The list used to live in localStorage, which is why items came back days later.
+// Clear the old keys once so existing visitors are not stuck with a stale list.
+try { localStorage.removeItem('shaftcfg'); localStorage.removeItem('cfg2'); } catch(e){}
+// Adding the same configuration again adds quantity to the row that is already
+// there — one row per part number, never two rows for one code.
+function addItem(it){
+  if (!it || !it.code) return;
+  delete it.issues;
+  const ex = state.list.find(x => x.code === it.code);
+  if (ex) { ex.qty = qtyOf(ex.qty + qtyOf(it.qty)); render(); toast('Already listed - quantity now ' + ex.qty); return; }
+  if (state.list.length >= QUOTE_MAX_ITEMS) { toast('The list holds ' + QUOTE_MAX_ITEMS + ' items'); return; }
+  state.list.push(it); render(); toast('Added to list');
+}
+
+// Only the quotation list persists. The configuration on screen is never restored, so
+// opening the tool always gives a blank configurator to work in — a half-built part
+// number from an earlier visit is noise, the list of parts to quote is not.
+function save(){ saveQuote(); }
+function load(){
+  // The list is shared with the other configurator and with the site, so a visitor can
+  // collect parts from several catalogues into one request.
+  const q = readQuote(); if (q) state.list = q.items;
+}
 
 // ---------- init ----------
 $('#srcName').textContent = CAT.catalogues.length + ' catalogue sections, ' + FAMS.length + ' product families';
@@ -864,15 +917,17 @@ const QP = new URLSearchParams(location.search);
 if (QP.get('embed') === '1') document.body.classList.add('embed');
 const qpCat = QP.get('cat');
 if (qpCat && catOf(qpCat)) {
-  const cc = catOf(qpCat); const f0 = cc.families && cc.families[0];
+  // A product page asks for its catalogue section, not for a particular family — land
+  // on that section's family list and let the visitor choose.
   state.cat = qpCat; state.q = '';
-  state.fam = f0 ? f0.uid : null; state.variant = f0 && f0.variants[0] ? f0.variants[0].code : null;
-  state.sel = {}; state.opt = {};
+  state.fam = null; state.variant = null; state.sel = {}; state.opt = {};
 }
 const hashPn = (location.hash.match(/[#&]pn=([^&]+)/) || [])[1];
-if (!state.fam || !catOf(state.cat)) {
+// The panel needs a catalogue to render; it never needs a family. Start on one with no
+// family chosen, so the part number reads "choose a family" instead of a preselection.
+if (!catOf(state.cat)) {
   const f = FAMS.find(x => x.id === 'SCD') || FAMS[0];
-  state.cat = f.cat; state.fam = f.uid; state.variant = f.variants[0].code;
+  state.cat = f.cat; state.fam = null; state.variant = null; state.sel = {}; state.opt = {};
 }
 render();
 if (hashPn) { const pn = decodeURIComponent(hashPn); $('#inDecode').value = pn; runDecode(pn); }

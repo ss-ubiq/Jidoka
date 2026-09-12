@@ -4,7 +4,7 @@
  * numbers; they never quote price or stock (non-e-commerce mandate).
  */
 import { catalogueProducts } from "./products";
-import { catalogueSections } from "./catalogueSections";
+import { catalogueSections, sectionByProduct } from "./catalogueSections";
 
 export type EngineeringTool = {
   slug: string;
@@ -29,7 +29,11 @@ export type EngineeringTool = {
 };
 
 /** Catalogues the Component Configurator covers, and the families those sit in. */
-const configuratorProducts = catalogueSections.flatMap((s) => [s.product, ...(s.alsoProducts ?? [])]);
+// Deduplicated: two sections can share a product (Ball Screw Supports has a
+// supplement), and without the Set that product renders two identical tool cards.
+const configuratorProducts = [
+  ...new Set(catalogueSections.flatMap((s) => [s.product, ...(s.alsoProducts ?? [])])),
+];
 const configuratorFamilies = [
   ...new Set(
     configuratorProducts.flatMap((code) => {
@@ -68,8 +72,11 @@ export const tools: EngineeringTool[] = [
     // better resolved by the specific tool that owns it (see matchTool).
     codePrefixes: [],
     terms: /\b(part|item|order)[ -]?(number|code)s?\b|catalogue code/i,
+    // Built from sectionByProduct so a product that appears in two sections resolves
+    // to the same place here as it does on the family page: the main book, not the
+    // supplement. Building it independently let the two disagree.
     sections: Object.fromEntries(
-      catalogueSections.flatMap((s) => [s.product, ...(s.alsoProducts ?? [])].map((code) => [code, s.key])),
+      Object.entries(sectionByProduct).map(([code, section]) => [code, section.key]),
     ),
   },
 ];

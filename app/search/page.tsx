@@ -4,7 +4,8 @@ import { ArrowRight, Boxes, Layers, Package, Upload, SlidersHorizontal } from "l
 import { matchTool } from "@/data/tools";
 import { SearchBox } from "@/components/search/SearchBox";
 import { TrackOnMount } from "@/components/analytics/TrackOnMount";
-import { searchCatalogue, type SearchHit } from "@/lib/catalog";
+import { classifyQuery } from "@/lib/analytics";
+import { searchCatalogue } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Search",
@@ -31,7 +32,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         </div>
       </div>
 
-      {query && hits.length === 0 && <TrackOnMount event="search_no_result" props={{ q: query }} />}
+      {query && hits.length === 0 && <TrackOnMount event="search_no_result" props={{ kind: classifyQuery(query), length: query.length }} />}
 
       {query && (
         <div className="mx-auto mt-12 max-w-3xl space-y-10">

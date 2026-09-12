@@ -9,16 +9,16 @@ Next.js 15 (App Router) · React 19 · TypeScript · Tailwind CSS. Self-hostable
 ```bash
 pnpm install
 cp .env.example .env   # all values optional — site runs with none set
-pnpm dev               # http://localhost:3000
+pnpm dev               # http://localhost:3100
 pnpm build && pnpm start
 ```
 
 ## Structure
-- `app/` — routes (homepage, products, solutions, applications, industries, engineering, forms, search, api).
-- `components/` — `site/` (header, footer, mega-menus), `ui/`, `home/`, `forms/`, `search/`.
-- `data/` — `families.ts` (12 public families), `products.ts` (50 verified catalogue products), `discovery.ts`.
-- `lib/` — `site.ts` (brand/nav), `catalog.ts`, `utils.ts`.
-- `docs/` — audit, IA, taxonomy, data-model, demand-analysis, design-system, RFQ-flow, SEO, implementation-plan.
+- `app/` — routes (homepage, products, solutions, applications, industries, engineering, engineering-desk, request-a-quote, send-requirement, tools, components, search, api).
+- `components/` — `site/` (header, footer, mega-menus), `ui/`, `home/`, `forms/`, `search/`, `products/`, `engineering/`, `analytics/`, `motion/`.
+- `data/` — `families.ts` (12 public families), `products.ts` (52 verified catalogue products), `discovery.ts`, `tools.ts`.
+- `lib/` — `site.ts` (brand/nav), `catalog.ts`, `utils.ts`, `email.ts`, `analytics.ts`, `jsonld.ts`.
+- `docs/` — audit, IA, taxonomy, data-model, demand-analysis, design-system, RFQ-flow, SEO, implementation-plan, deployment, branch1-integration.
 
 ## Principles
 Never invent specs/certifications/stock. Internal customer & sales data is never published. Every page ends in an action (quote / requirement / engineer). See `docs/`.

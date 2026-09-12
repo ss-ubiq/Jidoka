@@ -8,7 +8,9 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
   async redirects() {
-    // 301 map from the legacy jidoka.in site (§59). Empty until populated — safe default.
+    // Legacy-URL map from the old jidoka.in shop (§59). `permanent: true` makes Next emit
+    // **308**, not 301 — verified against the running server. Search engines treat the two
+    // the same for consolidation; 308 additionally preserves the request method.
     return legacyRedirects;
   },
   async headers() {

@@ -17,6 +17,7 @@ export function FormPage({
   crumbs,
   note,
   reference,
+  quoteId,
   prefill,
   motif = "sheet",
 }: {
@@ -27,6 +28,8 @@ export function FormPage({
   crumbs: Crumb[];
   note?: React.ReactNode;
   reference?: string;
+  /** Anonymous quote-session id from the configurator hand-off. */
+  quoteId?: string;
   prefill?: EnquiryPrefill;
   motif?: HeaderMotif;
 }) {
@@ -40,7 +43,7 @@ export function FormPage({
               {note}
             </div>
           )}
-          <EnquiryForm mode={mode} reference={reference} prefill={prefill} />
+          <EnquiryForm mode={mode} reference={reference} quoteId={quoteId} prefill={prefill} />
         </div>
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-xl border border-border bg-surface p-6 shadow-card">
