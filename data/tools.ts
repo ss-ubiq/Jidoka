@@ -48,7 +48,7 @@ export const tools: EngineeringTool[] = [
     slug: "shaft-configurator",
     name: "Linear Shaft Configurator",
     short: "Build a catalogue-valid linear shaft part number: family, material, diameter, length, end dimensions and optional processing.",
-    file: "/tools/shaft-configurator.html",
+    file: "/tools/shaft-configurator.embed.html",
     source: "Guide Shaft catalogue, pages 11–30",
     familyIds: ["linear-motion"],
     productCodes: ["JID-GUIDE-SHAFT"],
@@ -62,7 +62,7 @@ export const tools: EngineeringTool[] = [
     name: "Component Configurator",
     short:
       "Build a catalogue-valid part number from any of the 50 transcribed catalogue sections — 1,227 product families and 3,311 orderable codes, each linked back to the catalogue it came from.",
-    file: "/tools/component-configurator.html",
+    file: "/tools/component-configurator.embed.html",
     source: "51 supplier catalogues, 1,040 pages transcribed",
     familyIds: configuratorFamilies,
     productCodes: configuratorProducts,

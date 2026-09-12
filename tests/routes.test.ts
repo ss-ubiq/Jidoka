@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { existsSync } from "node:fs";
+import { tools } from "@/data/tools";
 
 import { families, familyById } from "@/data/families";
 import { catalogueProducts } from "@/data/products";
@@ -99,5 +101,27 @@ describe("searchCatalogue", () => {
     expect(searchCatalogue("qwrtzpfxvbn")).toEqual([]);
     expect(searchCatalogue("")).toEqual([]);
     expect(searchCatalogue("   ")).toEqual([]);
+  });
+});
+
+describe("the framed tool routes are not shadowed by a static file", () => {
+  // Netlify serves a static file matching the request path before Next.js runs. While the
+  // raw tools lived at public/tools/<slug>.html they were served in place of the route at
+  // /tools/<slug>, so production showed the bare tool with no site header, breadcrumbs or
+  // catalogue links — while localhost, which has no such rule, looked correct.
+  it.each(["shaft-configurator", "component-configurator"])(
+    "%s has no public file that collides with its route",
+    (slug) => {
+      expect(existsSync(`public/tools/${slug}.html`), `public/tools/${slug}.html shadows /tools/${slug}`).toBe(false);
+      expect(existsSync(`public/tools/${slug}.embed.html`)).toBe(true);
+    },
+  );
+
+  it("every registered tool points at a file that exists and is out of the route namespace", () => {
+    for (const tool of tools) {
+      expect(tool.file).toMatch(/\.embed\.html$/);
+      expect(existsSync(`public${tool.file}`), `${tool.file} is missing`).toBe(true);
+      expect(tool.file).not.toBe(`/tools/${tool.slug}.html`);
+    }
   });
 });

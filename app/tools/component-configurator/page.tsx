@@ -9,7 +9,7 @@ import { sectionByKey, productHref } from "@/data/catalogueSections";
 import { catalogueProducts } from "@/data/products";
 
 /** Self-contained configurator page under /public/tools — generated from the supplier catalogues. */
-const FILE = "/tools/component-configurator.html";
+const FILE = "/tools/component-configurator.embed.html";
 
 export const metadata: Metadata = {
   title: "Component Configurator",

@@ -37,8 +37,24 @@
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
 
 # The published configurator pages are noindex already; make that unambiguous to crawlers
-# that fetch the raw .html directly rather than the framed route.
+# that fetch the raw file directly rather than the framed route.
 [[headers]]
-  for = "/tools/*.html"
+  for = "/tools/*.embed.html"
   [headers.values]
     X-Robots-Tag = "noindex"
+
+# The raw tool files used to sit at /tools/<slug>.html. Netlify serves a static file
+# matching the request path before Next.js ever runs, so that file was served in place of
+# the framed route at /tools/<slug> - the site header, breadcrumbs, catalogue links and
+# CTA band never rendered in production, though they always did locally. The files are now
+# *.embed.html; these send the old paths to the proper page, and they fire because no file
+# sits at the old path any more.
+[[redirects]]
+  from = "/tools/component-configurator.html"
+  to = "/tools/component-configurator"
+  status = 301
+
+[[redirects]]
+  from = "/tools/shaft-configurator.html"
+  to = "/tools/shaft-configurator"
+  status = 301

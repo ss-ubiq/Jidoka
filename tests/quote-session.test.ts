@@ -15,7 +15,7 @@ import {
 
 const tools = ["shaft-configurator", "component-configurator"] as const;
 const toolSource = Object.fromEntries(
-  tools.map((slug) => [slug, readFileSync(`public/tools/${slug}.html`, "utf8")]),
+  tools.map((slug) => [slug, readFileSync(`public/tools/${slug}.embed.html`, "utf8")]),
 ) as Record<(typeof tools)[number], string>;
 
 describe("quantities", () => {
